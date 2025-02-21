@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from apps.home import views
 from .views import  (CreateSubjectAPIView, QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject,
                      SubjectsAPIView, SubjectsDetailAPIView, CatrgoryAPIView,QuizAPIView, QuestionAPIView, CreateCategoryAPIView, 
-                     CreateQuizAPIView)
+                     CreateQuizAPIView, CreateQuestionAPIView)
 
 urlpatterns = [
     # The home page
@@ -28,7 +28,7 @@ urlpatterns = [
     path('create-subject-api/', CreateSubjectAPIView.as_view(), name ='create_subject_API'),
     path('create-category-api/', CreateCategoryAPIView.as_view(), name ='create_category_API'),
     path('create-quiz-api/', CreateQuizAPIView.as_view(), name ='create_quiz_API'),
-    
+    path('create-question-api/', CreateQuestionAPIView.as_view(), name='create-question-API'),  
 
     # Quiz questions page
     path('quiz/<int:quiz_pk>/questions/', QuizQuestionsView.as_view(), name='quiz-questions'),

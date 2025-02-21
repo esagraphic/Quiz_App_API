@@ -25,14 +25,17 @@ class AnswerSerializer(serializers.ModelSerializer):
         
 class QuestionSerializer(serializers.ModelSerializer):
     answers = AnswerSerializer(many=True, read_only=True)
-    
     class Meta:
-        
         model= Question
         fields =['quiz','text','explanation','example_code','created_at','answers']
-        
-        
-# class AnswerSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model= Answer
-#         fields =['question','text','is_correct ']
+
+class QuestionCreateSerializer(serializers.ModelSerializer):
+    answers = AnswerSerializer(many=True)
+
+    class Meta:
+        model = Question
+        fields = ['quiz', 'text', 'explanation', 'example_code', 'answers']
+
+    def create(self, validated_data):
+        answers_data = validated_data.pop('answers')  # Extract answers data
+        question = Question.objects.create(**validated_data)  # Create the question
