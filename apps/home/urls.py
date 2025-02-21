@@ -1,6 +1,12 @@
 from django.urls import path, re_path
 from apps.home import views
+<<<<<<< HEAD
 from .views import QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject, SubjectsAPIView, SubjectsDetailAPIView, CategoryAPIView, QuizAPIView, QuestionAPIView
+=======
+from .views import  (CreateSubjectAPIView, QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject,
+                     SubjectsAPIView, SubjectsDetailAPIView, CatrgoryAPIView,QuizAPIView, QuestionAPIView, CreateCategoryAPIView, 
+                     CreateQuizAPIView)
+>>>>>>> e20268b (Api create subject category quiz)
 
 urlpatterns = [
     # The home page
@@ -18,17 +24,19 @@ urlpatterns = [
     #api
     path('lists/',SubjectsAPIView.as_view(), name ='apisubject_list'),
     path('lists/<int>:pk',SubjectsDetailAPIView.as_view(), name ='apisubject_datail'),
-    path('lists-category/',CategoryAPIView.as_view(), name ='apicategory_list'),
+    path('lists-category/',CatrgoryAPIView.as_view(), name ='apicategory_list'),
     path('list-quiz/', QuizAPIView.as_view(), name='quiz-list'),
-    path('question/<int>:pk',QuestionAPIView.as_view(), name ='question-api-detail'),
-
+    path('quiz/<int:quiz_pk>/questions/', QuestionAPIView.as_view(), name='question-api-detail'),
+    
+    #API CREATE
+    path('create-subject-api/', CreateSubjectAPIView.as_view(), name ='create_subject_API'),
+    path('create-category-api/', CreateCategoryAPIView.as_view(), name ='create_category_API'),
+    path('create-quiz-api/', CreateQuizAPIView.as_view(), name ='create_quiz_API'),
+    
 
     # Quiz questions page
     path('quiz/<int:quiz_pk>/questions/', QuizQuestionsView.as_view(), name='quiz-questions'),
 
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
-    
-    
 ]
-

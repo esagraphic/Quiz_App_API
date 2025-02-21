@@ -13,8 +13,8 @@ from django.views import View
 from django.views.generic import ListView , CreateView , DetailView
 from .models import Subject, Category, Quiz, Question, Answer   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
-from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 
 
 @login_required(login_url="/login/")
@@ -49,13 +49,6 @@ def pages(request):
     except:
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
-
-
-
-
-
-
-
 
 
 class SubjectListView(ListView):
@@ -110,10 +103,6 @@ class QuizDetailView(DetailView):
 
         context['quiz_question_count'] = quiz_question_count
         return context
-
-
-
-
 
 
 class QuizQuestionsView(View):
@@ -248,17 +237,33 @@ class SubjectsDetailAPIView(RetrieveAPIView):
     serializer_class = SubjectSerializer
     
     
-class CategoryAPIView(ListAPIView):
+
+class CatrgoryAPIView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-
-
+    
 class QuizAPIView(ListAPIView):
     queryset= Quiz.objects.all()
     serializer_class = QuizSerializer
 
-class QuestionAPIView(RetrieveAPIView):
-    queryset= Quiz.objects.all()
-    serializer_class = QuizSerializer
-    
 
+class QuestionAPIView(ListAPIView):
+    
+    serializer_class = QuestionSerializer
+    
+    def get_queryset(self):
+        quiz_pk = self.kwargs['quiz_pk']
+        return Question.objects.filter(quiz_id=quiz_pk).prefetch_related('answers')
+    
+class CreateSubjectAPIView(CreateAPIView):
+    queryset= Subject.objects.all()
+    serializer_class = SubjectSerializer
+    
+class CreateCategoryAPIView(CreateAPIView):
+    queryset= Category.objects.all()
+    serializer_class = CategorySerializer
+    
+class CreateCategoryAPIView(CreateAPIView):
+    queryset= Category.objects.all()
+    serializer_class = CategorySerializer
+    

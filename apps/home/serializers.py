@@ -11,15 +11,28 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['name', 'subject']
-
+        
+        
 class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
-        fields = ['category','name','is_private']
+        fields = ['id','category','name','is_private']
 
-class QuestionSerializer(serializers.ModelSerializer):
+class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
+        model = Answer
+        fields = ['id', 'text', 'is_correct']
+        
+class QuestionSerializer(serializers.ModelSerializer):
+    answers = AnswerSerializer(many=True, read_only=True)
+    
+    class Meta:
+        
         model= Question
-        fields =['quiz','text','explanation','example_code','created_at']
+        fields =['quiz','text','explanation','example_code','created_at','answers']
         
         
+# class AnswerSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model= Answer
+#         fields =['question','text','is_correct ']
