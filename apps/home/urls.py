@@ -1,12 +1,8 @@
 from django.urls import path, re_path
 from apps.home import views
-<<<<<<< HEAD
-from .views import QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject, SubjectsAPIView, SubjectsDetailAPIView, CategoryAPIView, QuizAPIView, QuestionAPIView
-=======
 from .views import  (CreateSubjectAPIView, QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject,
                      SubjectsAPIView, SubjectsDetailAPIView, CatrgoryAPIView,QuizAPIView, QuestionAPIView, CreateCategoryAPIView, 
                      CreateQuizAPIView)
->>>>>>> e20268b (Api create subject category quiz)
 
 urlpatterns = [
     # The home page
