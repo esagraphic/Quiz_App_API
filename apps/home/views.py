@@ -13,7 +13,8 @@ from django.views import View
 from django.views.generic import ListView , CreateView , DetailView
 from .models import Subject, Category, Quiz, Question, Answer   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
-
+from .serializers import SubjectSerializer, CategorySerializer
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 
 @login_required(login_url="/login/")
@@ -233,3 +234,22 @@ def create_quiz(request):
     else:
         form = QuizForm()
     return render(request, 'home/create_quiz.html', {'form': form})
+
+
+
+#api
+class SubjectsAPIView(ListAPIView):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+    
+    
+class SubjectsDetailAPIView(RetrieveAPIView):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+    
+    
+
+class CatrgoryAPIView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
