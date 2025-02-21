@@ -13,7 +13,7 @@ from django.views import View
 from django.views.generic import ListView , CreateView , DetailView
 from .models import Subject, Category, Quiz, Question, Answer   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
-from .serializers import SubjectSerializer, CategorySerializer
+from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 
@@ -248,8 +248,15 @@ class SubjectsDetailAPIView(RetrieveAPIView):
     serializer_class = SubjectSerializer
     
     
-
-class CatrgoryAPIView(ListAPIView):
+class CategoryAPIView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+
+class QuizAPIView(ListAPIView):
+    queryset= Quiz.objects.all()
+    serializer_class = QuizSerializer
+
+class QuestionAPIView(RetrieveAPIView):
+    queryset= Quiz.objects.all()
+    serializer_class = QuizSerializer

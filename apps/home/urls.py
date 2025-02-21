@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from apps.home import views
-from .views import QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject, SubjectsAPIView, SubjectsDetailAPIView, CatrgoryAPIView
+from .views import QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject, SubjectsAPIView, SubjectsDetailAPIView, CategoryAPIView, QuizAPIView, QuestionAPIView
 
 urlpatterns = [
     # The home page
@@ -14,10 +14,14 @@ urlpatterns = [
     path('add_question/', views.add_question, name='add_question'),
     path('create_category/', views.create_category, name='create_category'),
     path('create_quiz/', views.create_quiz, name='create_quiz'),
+
     #api
     path('lists/',SubjectsAPIView.as_view(), name ='apisubject_list'),
     path('lists/<int>:pk',SubjectsDetailAPIView.as_view(), name ='apisubject_datail'),
-    path('lists-category/',CatrgoryAPIView.as_view(), name ='apicategory_list'),
+    path('lists-category/',CategoryAPIView.as_view(), name ='apicategory_list'),
+    path('list-quiz/', QuizAPIView.as_view(), name='quiz-list'),
+    path('question/<int>:pk',QuestionAPIView.as_view(), name ='question-api-detail'),
+
 
     # Quiz questions page
     path('quiz/<int:quiz_pk>/questions/', QuizQuestionsView.as_view(), name='quiz-questions'),
