@@ -1,0 +1,66 @@
+
+    <div class="sidebar">
+        <!--
+          Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+      -->
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="javascript:void(0)" class="simple-text logo-mini">
+                    QA
+                </a>
+                <a href="javascript:void(0)" class="simple-text logo-normal">
+                    Quiz App
+                </a>
+            </div>
+            <ul class="nav">
+                <li class="{% if 'index' in segment %} active {% endif %} ">
+                    <a href="/">
+                        <i class="tim-icons icon-chart-pie-36"></i>
+                        <p>Subjects</p>
+                    </a>
+                </li>
+                
+                
+                {% if user.is_authenticated %}
+                    <li class="{% if 'create_subject' in segment %} active {% endif %}">
+                        <a href="{% url 'create_subject' %}">
+                            <i class="tim-icons icon-pencil"></i>
+                            <p>Create Subject</p>
+                        </a>
+                    </li>
+                    <li class="{% if 'create_category' in segment %} active {% endif %}">
+                        <a href="{% url 'create_category' %}">
+                            <i class="tim-icons icon-tag"></i>
+                            <p>Create Category</p>
+                        </a>
+                    </li>
+                    <li class="{% if 'create_quiz' in segment %} active {% endif %}">
+                        <a href="{% url 'create_quiz' %}">
+                            <i class="tim-icons icon-notes"></i>
+                            <p>Create Quiz</p>
+                        </a>
+                    </li>
+                    <li class="{% if 'add_question' in segment %} active {% endif %}">
+                        <a href="{% url 'add_question' %}">
+                            <i class="tim-icons icon-bulb-63"></i>
+                            <p>Add Question</p>
+                        </a>
+                    </li>
+                {% endif %}     {% if user.is_authenticated %}
+                    <li>
+                        <a href="{% url 'logout' %}">
+                            <i class="tim-icons icon-button-power"></i>
+                            <p>Logout</p>
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'login' %}">
+                            <i class="tim-icons icon-button-power"></i>
+                            <p>Login</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+        </div>
+    </div>

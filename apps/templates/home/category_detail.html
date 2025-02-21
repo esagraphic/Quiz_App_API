@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Categories for {{ subject.name }} {% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Categories for {{ subject.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table tablesorter">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th>Category</th>
+                                    <th class="text-center">Total Questions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category, question_count in category_question_data %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'quiz-detail' pk=category.pk %}">{{ category.name }}</a>  <!-- Link to quiz list -->
+                                    </td>
+                                    <td class="text-center">{{ question_count }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="2" class="text-center">No categories found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="{% url 'subject-list' %}" class="btn btn-primary">Back to Subjects</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

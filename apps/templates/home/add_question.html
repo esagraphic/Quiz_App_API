@@ -1,0 +1,73 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Add Question {% endblock %}
+
+{% block content %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <!-- Question & Explanation Card -->
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="title">Add Question</h4>
+          </div>
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="quiz">Select Quiz</label>
+                {{ question_form.quiz }}
+              </div>
+
+              <div class="form-group">
+                <label for="text">Question Text</label>
+                {{ question_form.text }}
+              </div>
+
+              <div class="form-group">
+                <label for="explanation">Explanation</label>
+                {{ question_form.explanation }}
+              </div>
+
+              <div class="form-group">
+                <label for="example_code">Example Code</label>
+                {{ question_form.example_code }}
+              </div>
+              
+              <!-- Answers -->
+              <div class="form-group">
+                <label for="answer1">Answer 1</label>
+                {{ question_form.answer1 }}
+              </div>
+
+              <div class="form-group">
+                <label for="answer2">Answer 2</label>
+                {{ question_form.answer2 }}
+              </div>
+
+              <div class="form-group">
+                <label for="answer3">Answer 3</label>
+                {{ question_form.answer3 }}
+              </div>
+
+              <div class="form-group">
+                <label for="answer4">Answer 4</label>
+                {{ question_form.answer4 }}
+              </div>
+
+              <!-- Correct Answers -->
+              <div class="form-group">
+                <label for="correct_answers">Select Correct Answers</label>
+                {{ question_form.correct_answers }}
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-success btn-fill">Save Question</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{ quiz.name }} {% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Quiz: {{ quiz.name }}</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Quiz Questions -->
+                    <div id="quiz-container">
+                        <form method="POST">
+                            {% csrf_token %}
+                            
+                            <div class="table-responsive">
+                                <table class="table tablesorter">
+                                    <thead class="text-primary">
+                                        <tr>
+                                            <th>Question</th>
+                                            <th>Answers</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for question in questions_data %}
+                                        <tr>
+                                            <td>{{ question.question_text }}</td>
+                                            <td>
+                                                {% for answer in question.answers.all %}
+                                                <div>
+                                                    <input type="checkbox" name="question_{{ question.id }}" value="{{ answer.id }}" id="answer_{{ answer.id }}">
+                                                    <label for="answer_{{ answer.id }}">{{ answer.text }}</label>
+                                                </div>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+
+                    {% if results %}
+                    <!-- Result Section -->
+                    <div id="result-container" class="mt-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Result</h4>
+                                <p>Total Score: <strong>{{ score }} / {{ total_possible_score }}</strong></p>
+                                <p>Score Percentage: <strong>{{ score_percentage }}%</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Explanation Section -->
+                    <div id="explanation-container" class="mt-4">
+                        <h5>Details</h5>
+                        {% for question, result, correct_answer in results %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ question.text }}: {{ result }}
+                                    {% if result == 'Incorrect' %}
+                                    <span class="text-danger">- Correct answer: {{ correct_answer }}</span>
+                                    {% endif %}
+                                </h5>
+                                <p><strong>Explanation:</strong> {{ question.explanation }}</p>
+                                <p><strong>Example Code:</strong></p>
+                                <pre class="example-code">{{ question.example_code }}</pre>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inline CSS -->
+<style>
+    .card {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .example-code {
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 14px;
+        color: #333;
+        border: 1px solid #ddd;
+        margin-top: 10px;
+        overflow-x: auto;
+    }
+
+    .text-danger {
+        font-size: 14px;
+        font-style: italic;
+        display: block;
+        margin-top: 5px;
+    }
+</style>
+
+<!-- Inline JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const explanationContainer = document.getElementById('explanation-container');
+
+        if (resultContainer) {
+            quizContainer.style.display = 'none';  // Hide quiz on results page
+        }
+    });
+</script>
+
+{% endblock %}
