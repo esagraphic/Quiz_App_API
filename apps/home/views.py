@@ -264,9 +264,10 @@ class CreateCategoryAPIView(CreateAPIView):
     serializer_class = CategorySerializer
     
 class CreateQuizAPIView(CreateAPIView):
-    queryset= Quiz.objects.all()
+    queryset=Quiz.objects.all()
     serializer_class = QuizSerializer
-
+    
 class CreateQuestionAPIView(CreateAPIView):
     queryset= Question.objects.all()
-    serializer_class = QuestionCreateSerializer  
+    serializer_class = QuestionSerializer
+    
