@@ -39,3 +39,9 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         answers_data = validated_data.pop('answers')  # Extract answers data
         question = Question.objects.create(**validated_data)  # Create the question
+
+        # Create answers linked to this question
+        for answer_data in answers_data:
+            Answer.objects.create(question=question, **answer_data)
+
+        return question  # ✅ Must return the created question
