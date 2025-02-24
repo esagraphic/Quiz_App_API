@@ -22,7 +22,7 @@ urlpatterns = [
     path('lists/<int>:pk',SubjectsDetailAPIView.as_view(), name ='apisubject_datail'),
     path('lists-category/',CatrgoryAPIView.as_view(), name ='apicategory_list'),
     path('list-quiz/', QuizAPIView.as_view(), name='quiz-list'),
-    path('quiz/<int:quiz_pk>/questions/', QuestionAPIView.as_view(), name='question-api-detail'),
+    path('quiz/<int:quiz_pk>/questions-API/', QuestionAPIView.as_view(), name='question-api-detail'),
     
     #API CREATE
     path('create-subject-api/', CreateSubjectAPIView.as_view(), name ='create_subject_API'),

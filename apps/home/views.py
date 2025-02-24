@@ -269,5 +269,5 @@ class CreateQuizAPIView(CreateAPIView):
     
 class CreateQuestionAPIView(CreateAPIView):
     queryset= Question.objects.all()
-    serializer_class = QuestionSerializer
+    serializer_class = QuestionCreateSerializer
     
