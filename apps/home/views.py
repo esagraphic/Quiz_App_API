@@ -14,7 +14,7 @@ from django.views.generic import ListView , CreateView , DetailView
 from .models import Subject, Category, Quiz, Question, Answer   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
 from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 
 
 @login_required(login_url="/login/")
@@ -270,4 +270,35 @@ class CreateQuizAPIView(CreateAPIView):
 class CreateQuestionAPIView(CreateAPIView):
     queryset= Question.objects.all()
     serializer_class = QuestionCreateSerializer
-    
+
+class UpdateSubjectsAPIView(UpdateAPIView):
+    queryset= Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+class UpdateCategoryAPIView(UpdateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class UpdateQuizAPIView(UpdateAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
+
+class UpdateQuestionAPIView(UpdateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionCreateSerializer
+
+class DeleteSubjectAPIView(DestroyAPIView):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+class DeleteCategoryAPIView(DestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class DeleteQuizAPIView(DestroyAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
+
+class DeleteQuestionAPIView(DestroyAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionCreateSerializer
