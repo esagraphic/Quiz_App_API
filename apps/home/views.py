@@ -19,6 +19,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from .permissions import AllowCreateUser  # Import custom permission
+
 
 @login_required(login_url="/login/")
 def index(request):
@@ -341,6 +343,8 @@ class QuestionViewSet(ModelViewSet):
 class CustomUserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    permission_classes = [AllowCreateUser]  # Apply the custom permission
+
     
     
 class CustomObtainAuthToken(ObtainAuthToken):
