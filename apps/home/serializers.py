@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Subject, Category, Quiz, Question, Answer
+from .models import Subject, Category, Quiz, Question, Answer,CustomUser
+from django.contrib.auth.hashers import make_password
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -60,3 +61,13 @@ class QuestionCreateSerializer(serializers.ModelSerializer):
             Answer.objects.create(question=instance, **answer_data)  # Add new answers
 
         return instance  # ✅ Must return the updated question
+    
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'email', 'password', 'bio', 'first_name', 'last_name', 'is_active'] 
+        extra_kwargs = {'password': {'write_only': True}}  # Hide password from responses
+
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])  # Hash password
+        return super().create(validated_data)

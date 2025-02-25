@@ -11,11 +11,14 @@ from django.template import loader
 from django.urls import reverse
 from django.views import View
 from django.views.generic import ListView , CreateView , DetailView
-from .models import Subject, Category, Quiz, Question, Answer   
+from .models import Subject, Category, Quiz, Question, Answer, CustomUser   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
-from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer
+from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer,CustomUserSerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 
 @login_required(login_url="/login/")
 def index(request):
@@ -333,3 +336,23 @@ class QuestionViewSet(ModelViewSet):
         if quiz_pk:
             return Question.objects.filter(quiz_id=quiz_pk).prefetch_related('answers')
         return super().get_queryset()
+    
+    
+class CustomUserViewSet(ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    
+    
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        
+        # Ensure only active users can get a token
+        if not user.is_active:
+            return Response({"error": "User account is disabled."}, status=403)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+    
