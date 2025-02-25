@@ -2,7 +2,17 @@ from django.urls import path, re_path
 from apps.home import views
 from .views import  (CreateSubjectAPIView, QuizQuestionsView, SubjectListView, CategoryDetailView, QuizDetailView , create_subject,
                      SubjectsAPIView, SubjectsDetailAPIView, CatrgoryAPIView,QuizAPIView, QuestionAPIView, CreateCategoryAPIView, 
-                     CreateQuizAPIView, CreateQuestionAPIView, UpdateSubjectsAPIView, UpdateCategoryAPIView, UpdateQuizAPIView, UpdateQuestionAPIView, DeleteSubjectAPIView, DeleteCategoryAPIView,DeleteQuizAPIView,DeleteQuestionAPIView)
+                     CreateQuizAPIView, CreateQuestionAPIView, UpdateSubjectsAPIView, UpdateCategoryAPIView, UpdateQuizAPIView, UpdateQuestionAPIView, DeleteSubjectAPIView, DeleteCategoryAPIView,DeleteQuizAPIView,DeleteQuestionAPIView, SubjectViewSet, CategoryViewSet, QuizViewSet, QuestionViewSet)
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+
+# Second way to implement the API
+router = DefaultRouter()
+router.register(r'subjects', SubjectViewSet, basename='subject')
+router.register(r'categories', CategoryViewSet, basename='category')
+router.register(r'quizzes', QuizViewSet, basename='quiz')
+router.register(r'questions', QuestionViewSet, basename='question')
+
 
 urlpatterns = [
     # The home page
@@ -42,6 +52,8 @@ urlpatterns = [
     path('delete-quiz-api/<int:pk>/', DeleteQuizAPIView.as_view(), name='delete_quiz_API'),
     path('delete-question-api/<int:pk>/', DeleteQuestionAPIView.as_view(), name='delete_question_API'),
     
+    # Using the APIModelViewSet
+    path('API-v1/', include(router.urls)),
 
     # Quiz questions page
     path('quiz/<int:quiz_pk>/questions/', QuizQuestionsView.as_view(), name='quiz-questions'),
