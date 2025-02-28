@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-6">API Documentation</h1>
+        <table class="min-w-full table-auto bg-white border-collapse">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-6 py-4 border-b text-left">Action</th>
+                    <th class="px-6 py-4 border-b text-left">HTTP Method</th>
+                    <th class="px-6 py-4 border-b text-left">URL Path</th>
+                    <th class="px-6 py-4 border-b text-left">Example Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- User Routes -->
+                    <tr class="border-b">
+                        <td class="px-6 py-4">
+                            <span class="text-blue-600 hover:underline cursor-pointer">User Registration</span>
+                        </td>
+                        <td class="px-6 py-4">POST</td>
+                        <td class="px-6 py-4">
+                            <a href="http://127.0.0.1:8000/API-v1/users/" class="text-blue-600 hover:underline">/users/</a>
+                        </td>
+                        <td class="px-6 py-4">
+                            <pre class="bg-gray-200 p-2 rounded-md">
+{
+  "username": "john_doe",
+  "password": "password123",
+  "email": "john.doe@example.com",
+  "bio": "Software developer"
+}
+                            </pre>
+                        </td>
+                    </tr>
+                    <!-- Token Authentication API -->
+                    <tr class="border-b">
+                        <td class="px-6 py-4">
+                            <span class="text-blue-600 hover:underline cursor-pointer">Obtain Token</span>
+                        </td>
+                        <td class="px-6 py-4">POST</td>
+                        <td class="px-6 py-4">
+                            <a href="http://127.0.0.1:8000/API-v1/api-token-auth/" class="text-blue-600 hover:underline">/api-token-auth/</a>
+                        </td>
+                        <td class="px-6 py-4">
+                            <pre class="bg-gray-200 p-2 rounded-md">
+{
+  "username": "john_doe",
+  "password": "password123"
+}
+                            </pre>
+                        </td>
+                    </tr>
+                <!-- Subject Routes -->
+                <tr class="border-b">
+                    <td class="px-6 py-4">List all subjects</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/subjects/" class="text-blue-500 hover:underline">/API-v1/subjects/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Create a subject</td>
+                    <td class="px-6 py-4">POST</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/subjects/" class="text-blue-500 hover:underline">/API-v1/subjects/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "name": "IT"
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Retrieve a subject</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/subjects/1/" class="text-blue-500 hover:underline">/API-v1/subjects/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Update a subject</td>
+                    <td class="px-6 py-4">PUT</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/subjects/1/" class="text-blue-500 hover:underline">/API-v1/subjects/{id}/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "name": "IT"
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Delete a subject</td>
+                    <td class="px-6 py-4">DELETE</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/subjects/1/" class="text-blue-500 hover:underline">/API-v1/subjects/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+               
+</pre>
+                    </td>
+                </tr>
+
+                <!-- Category Routes -->
+                <tr class="border-b">
+                    <td class="px-6 py-4">List all categories</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/categories/" class="text-blue-500 hover:underline">/API-v1/categories/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Create a category</td>
+                    <td class="px-6 py-4">POST</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/categories/" class="text-blue-500 hover:underline">/API-v1/categories/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "subject": 1,
+    "name": "Django"
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Retrieve a category</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/categories/1/" class="text-blue-500 hover:underline">/API-v1/categories/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Update a category</td>
+                    <td class="px-6 py-4">PUT</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/categories/1/" class="text-blue-500 hover:underline">/API-v1/categories/{id}/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "subject": 1,
+    "name": "Django"
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Delete a category</td>
+                    <td class="px-6 py-4">DELETE</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/categories/1/" class="text-blue-500 hover:underline">/API-v1/categories/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+
+                <!-- Quiz Routes -->
+                <tr class="border-b">
+                    <td class="px-6 py-4">List all quizzes</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/quizzes/" class="text-blue-500 hover:underline">/API-v1/quizzes/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Create a quiz</td>
+                    <td class="px-6 py-4">POST</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/quizzes/" class="text-blue-500 hover:underline">/API-v1/quizzes/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "category": 1,
+    "name": "Django Introduction",
+    "is_private": false
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Retrieve a quiz</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/quizzes/1/" class="text-blue-500 hover:underline">/API-v1/quizzes/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Update a quiz</td>
+                    <td class="px-6 py-4">PUT</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/quizzes/1/" class="text-blue-500 hover:underline">/API-v1/quizzes/{id}/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "category": 1,
+    "name": "Django Introduction",
+    "is_private": false
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Delete a quiz</td>
+                    <td class="px-6 py-4">DELETE</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/quizzes/1/" class="text-blue-500 hover:underline">/API-v1/quizzes/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+
+                <!-- Question Routes -->
+                <tr class="border-b">
+                    <td class="px-6 py-4">List all questions</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/questions/" class="text-blue-500 hover:underline">/API-v1/questions/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Create a question</td>
+                    <td class="px-6 py-4">POST</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/questions/" class="text-blue-500 hover:underline">/API-v1/questions/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "quiz": 2,
+    "text": "What is Django?",
+    "explanation": "Django is a Python framework.",
+    "example_code": "from django.http import HttpResponse",
+    "answers": [
+        {"text": "A Python framework", "is_correct": true},
+        {"text": "A JavaScript library", "is_correct": false},
+        {"text": "A database", "is_correct": false},
+        {"text": "A frontend tool", "is_correct": false}
+    ]
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Retrieve a question</td>
+                    <td class="px-6 py-4">GET</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/questions/1/" class="text-blue-500 hover:underline">/API-v1/questions/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Update a question</td>
+                    <td class="px-6 py-4">PUT</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/questions/1/" class="text-blue-500 hover:underline">/API-v1/questions/{id}/</a></td>
+                    <td class="px-6 py-4">
+                        <pre class="text-sm bg-gray-200 p-2 rounded">{
+    "quiz": 2,
+    "text": "What is Django?",
+    "explanation": "Django is a Python framework.",
+    "example_code": "from django.http import HttpResponse",
+    "answers": [
+        {"text": "A Python framework", "is_correct": true},
+        {"text": "A JavaScript library", "is_correct": false},
+        {"text": "A database", "is_correct": false},
+        {"text": "A frontend tool", "is_correct": false}
+    ]
+}</pre>
+                    </td>
+                </tr>
+                <tr class="border-b">
+                    <td class="px-6 py-4">Delete a question</td>
+                    <td class="px-6 py-4">DELETE</td>
+                    <td class="px-6 py-4"><a href="http://127.0.0.1:8000/API-v1/questions/1/" class="text-blue-500 hover:underline">/API-v1/questions/{id}/</a></td>
+                    <td class="px-6 py-4">N/A</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
