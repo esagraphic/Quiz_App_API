@@ -1,28 +1,35 @@
 version: '3.8'
+
 services:
-  appseed-app:
-    container_name: appseed_app
-    restart: always
-    env_file: .env
+  web:
     build: .
-    networks:
-      - db_network
-      - web_network
-  nginx:
-    container_name: nginx
-    restart: always
-    image: "nginx:latest"
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn --workers 4 --bind 0.0.0.0:8000 core.wsgi:application"
+    volumes:
+      - .:/usr/src/app
+      - static_volume_live:/usr/src/app/staticfiles
     ports:
-      - "5085:5085"
+      - "8000:8000"
+    networks:
+      - app-network_live
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
+      - static_volume_live:/usr/src/app/staticfiles
+    depends_on:
+      - web
     networks:
-      - web_network
-    depends_on: 
-      - appseed-app
+      - app-network_live
+
+volumes:
+  static_volume_live:
+
 networks:
-  db_network:
+  app-network_live:
+    name: app-network_live
     driver: bridge
-  web_network:
-    driver: bridge
- 
