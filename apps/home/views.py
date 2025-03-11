@@ -344,7 +344,7 @@ class QuestionViewSet(ModelViewSet):
 class CustomUserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    # permission_classes = [AllowCreateUser]  # Apply the custom permission
+    permission_classes = [AllowCreateUser]  # Apply the custom permission
 
     
     
