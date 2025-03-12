@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   web:
@@ -11,11 +11,14 @@ services:
       - static_volume_live:/usr/src/app/staticfiles
     ports:
       - "8000:8000"
+    depends_on:
+      - postgres
     networks:
       - app-network_live
 
   nginx:
     image: nginx:latest
+    container_name: nginx_server
     ports:
       - "80:80"
     volumes:
@@ -26,8 +29,24 @@ services:
     networks:
       - app-network_live
 
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: quizappdb
+      POSTGRES_USER: quizappuser
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports: # not necessary to expose the port
+      - "5432:5432"
+    networks:
+      - app-network_live
+
 volumes:
   static_volume_live:
+  postgres_data:  
 
 networks:
   app-network_live:
