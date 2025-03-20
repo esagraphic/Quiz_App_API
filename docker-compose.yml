@@ -39,8 +39,8 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports: # not necessary to expose the port
-      - "5432:5432"
+    # ports: # not necessary to expose the port
+    #   - "5432:5432"
     networks:
       - app-network_live
 

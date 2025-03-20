@@ -43,3 +43,11 @@ class QuestionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['quiz'].queryset = Quiz.objects.all()
+
+        # Add Tailwind CSS classes to form fields
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, forms.CheckboxSelectMultiple):
+                field.widget.attrs.update({'class': 'mt-2'})
+            else:
+                field.widget.attrs.update({'class': 'w-full p-2 border rounded-md mt-1'})
+
