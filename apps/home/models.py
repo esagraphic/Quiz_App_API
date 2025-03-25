@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
@@ -11,6 +12,8 @@ class CustomUser(AbstractUser):
 
 class Subject(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="subjects" , default=1)
+
 
     def __str__(self):
         return self.name

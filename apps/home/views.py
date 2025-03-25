@@ -166,17 +166,19 @@ class QuizQuestionsView(View):
 
 
 
-
 def create_subject(request):
     if request.method == "POST":
         form = SubjectForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('create_category')  # Redirect to the subject list or another page
+            subject = form.save(commit=False)  #  Create but don't save yet
+            subject.user = request.user  #  Assign the logged-in user
+            subject.save()  
+            return redirect('create_category')
     else:
         form = SubjectForm()
 
     return render(request, 'home/create_subject.html', {'form': form})
+
 
 
 
