@@ -21,7 +21,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .permissions import AllowCreateUser   # Import custom permission
-
+from django.utils import timezone
 
 @login_required(login_url="/login/")
 def index(request):
