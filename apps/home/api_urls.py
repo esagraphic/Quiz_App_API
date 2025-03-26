@@ -13,6 +13,8 @@ from .views import (
     CatrgoryAPIView,
     QuizAPIView,
     QuestionAPIView,
+    QuizQuestionsView,
+    UpdateQuestionView,
     CreateSubjectAPIView,
     CreateCategoryAPIView,
     CreateQuizAPIView,
@@ -67,4 +69,5 @@ urlpatterns = [
 
     # DRF Router
     path("", include(router.urls)),  # API-v1/
+
 ]

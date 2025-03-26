@@ -83,6 +83,15 @@ class SubjectListView(ListView):
 
         context['subject_question_data'] = subject_question_data
         return context
+####
+    def post(self, request, *args, **kwargs):
+        if 'update_subjects' in request.POST:
+            for subject in Subject.objects.all():
+                subject.updated_at = timezone.now()
+                subject.save()
+           # messages.success(request, "Subjects updated successfully!")
+            return redirect('home:subject_list')
+        return super().post(request, *args, **kwargs)
 
 # Remove user from subject , category and quiz
 def remove_user_from_subject(request, subject_id):
@@ -151,6 +160,7 @@ class QuizDetailView(DetailView):
 
 
 class QuizQuestionsView(View):
+    
     def get(self, request, quiz_pk):
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
         questions = quiz.questions.all()
@@ -169,7 +179,8 @@ class QuizQuestionsView(View):
         
         return render(request, 'home/quiz_questions.html', {
             'quiz': quiz,
-            'questions_data': questions_data  # Pass questions_data to the template
+            'questions_data': questions_data,  # Pass questions_data to the template
+         # Pass questions_data to the template
         })
 
     def post(self, request, quiz_pk):
@@ -201,6 +212,30 @@ class QuizQuestionsView(View):
             'score': total_points,
             'score_percentage': round(score_percentage, 2),
             'total_possible_score': total_possible_score,
+        })
+#Update Question
+class UpdateQuestionView(View):
+    def get(self, request, question_pk):
+        question = get_object_or_404(Question, pk=question_pk)  
+
+        form = QuestionForm(instance=question)
+
+        return render(request, 'home/update_question.html', {
+            'form': form,
+            'question': question
+        })  
+    
+    def post(self, request, question_pk):
+        question = get_object_or_404(Question, pk=question_pk)
+
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+            return redirect('quiz_questions', quiz_pk=question.quiz.pk)
+        
+        return render(request, 'home/update_question.html', {
+            'form': form,
+            'question': question
         })
 
 

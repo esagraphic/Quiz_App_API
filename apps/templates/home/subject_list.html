@@ -61,3 +61,18 @@
 </div>
 
 {% endblock content %}
+
+###
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="update_subjects" class="btn btn-primary">Update Subjects</button>
+</form>
+
+<h1>Subject List</h1>
+<ul>
+    {% for subject, question_count in subject_question_data %}
+        <li>
+            {{ subject.name }} - {{ question_count }} questions
+        </li>
+    {% endfor %}
+</ul>
