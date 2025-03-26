@@ -48,31 +48,39 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <p>Do you want to create your own quiz? You can start from <a href="{% url 'create_subject' %}">here</a>.</p>
-                            </div>
-                        </div></div>
-                    </div>
-                </div>
+             <!-- End of Subjects Table -->
             </div>
         </div>
     </div>
 </div>
+</div>
 
+<!-- Update Subjects Button -->
+<div class="row mt-4">
+<div class="col-md-12 text-center">
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" name="update_subjects" class="btn btn-primary">Update Subjects</button>
+    </form>
+</div>
+</div>
+
+<!-- Simple Subject List (Optional) -->
+<div class="row">
+<div class="col-md-12">
+    <h1 class="mt-4">Subject List</h1>
+    <ul>
+        {% for subject, question_count in subject_question_data %}
+        <li>
+            <strong>{{ subject.name }}</strong> - {{ question_count }} questions
+        </li>
+        {% empty %}
+        <li>No subjects available.</li>
+        {% endfor %}
+    </ul>
+</div>
+</div>
+</div>
 {% endblock content %}
 
-###
-<form method="POST">
-    {% csrf_token %}
-    <button type="submit" name="update_subjects" class="btn btn-primary">Update Subjects</button>
-</form>
-
-<h1>Subject List</h1>
-<ul>
-    {% for subject, question_count in subject_question_data %}
-        <li>
-            {{ subject.name }} - {{ question_count }} questions
-        </li>
-    {% endfor %}
 </ul>

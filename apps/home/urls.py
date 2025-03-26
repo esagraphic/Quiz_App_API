@@ -28,6 +28,8 @@ urlpatterns = [
      # Update Button
     path('quiz/<int:quiz_pk>/', QuizQuestionsView.as_view(), name='quiz_questions'),
     path('quiz/questions/<int:question_pk>/update/', UpdateQuestionView.as_view(), name='update_question'),
+    path('subjects/', SubjectListView.as_view(), name='subject_list'),
+
 
     # Quiz questions page
     path("quiz/<int:quiz_pk>/questions/", QuizQuestionsView.as_view(), name="quiz-questions"),
