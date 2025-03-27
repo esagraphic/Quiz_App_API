@@ -17,6 +17,7 @@
                                 <tr>
                                     <th>Subject</th>
                                     <th class="text-center">Total Questions</th>
+                                    <th class="text-center">Actions</th> <!-- Added Actions column -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -28,10 +29,21 @@
                                         </a>
                                     </td>
                                     <td class="text-center">{{ question_count }}</td>
+                                    <td class="text-center">
+                                        <!-- Update Button -->
+                                        <a href="" class="btn btn-warning btn-sm">
+                                            Update
+                                        </a>
+                                        <!-- Delete Button -->
+                                        <a href="{% url 'remove_subject' subject.id %}" class="btn btn-danger btn-sm" 
+                                           onclick="return confirm('Are you sure you want to remove this subject?');">
+                                            Delete
+                                        </a>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="2" class="text-center">No subjects found.</td>
+                                    <td colspan="3" class="text-center">No subjects found.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

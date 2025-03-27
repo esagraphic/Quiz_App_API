@@ -6,6 +6,7 @@ from .views import (
     QuizDetailView,
     QuizQuestionsView,
     create_subject,
+    remove_user_from_subject,
 )
 
 urlpatterns = [
@@ -24,6 +25,8 @@ urlpatterns = [
     # Quiz questions page
     path("quiz/<int:quiz_pk>/questions/", QuizQuestionsView.as_view(), name="quiz-questions"),
     
+    # Remove the current logged-in user from the ManyToManyField
+    path('subjects/remove/<int:subject_id>/', remove_user_from_subject, name='remove_subject'),
     # Matches any HTML file
     re_path(r"^.*\.*", views.pages, name="pages"),
 ]
