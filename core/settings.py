@@ -111,7 +111,7 @@ DATABASES = {
         'NAME': 'quizappdb',
         'USER': 'quizappuser',
         'PASSWORD': 'password',
-        'HOST': 'localhost', # set in docker-compose.yml file for postgres container but if you wnna use local postgres then set 'localhost'
+        'HOST': 'postgres', # set in docker-compose.yml file for postgres container but if you wnna use local postgres then set 'localhost'
         'PORT': '',
     }
 }
