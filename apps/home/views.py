@@ -209,15 +209,35 @@ def create_subject(request):
     if request.method == "POST":
         form = SubjectForm(request.POST)
         if form.is_valid():
-            subject= form.save()
+            subject_name = form.cleaned_data['name']
+            print(f"Subject name from form: '{subject_name}'")
+
+            try:
+                # Try to get the existing subject (case-insensitive match)
+                subject = Subject.objects.get(name__iexact=subject_name)
+                created = False  # It already exists
+            except Subject.DoesNotExist:
+                # If subject doesn't exist, create a new one
+                subject = Subject(name=subject_name)
+                subject.save()
+                created = True  # Subject was created
+
+            # Add the current logged-in user to the subject's users field
             subject.users.add(request.user)
 
-            
+            # Debugging output
+            print(f"Created: {created}")
+            print(f"Subject: {subject.name if subject else 'No subject found'}")
+            print(f"User {request.user.email} added to subject '{subject.name}'")
+
             return redirect('create_category')
     else:
         form = SubjectForm()
 
     return render(request, 'home/create_subject.html', {'form': form})
+
+
+
 
 
 
@@ -257,14 +277,36 @@ def create_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, user=request.user)  # Pass logged-in user
         if form.is_valid():
-            category = form.save()
+            category_name = form.cleaned_data['name']
+            print(f"Category name from form: '{category_name}'")
+
+            try:
+                # Try to get the existing category (case-insensitive match)
+                category = Category.objects.get(name__iexact=category_name)
+                created = False  # It already exists
+            except Category.DoesNotExist:
+                # If category doesn't exist, create a new one
+                category = form.save(commit=False)
+                category.subject = form.cleaned_data['subject']
+                category.name = category_name
+                category.save()
+                created = True  # Category was created
+            # Add the current logged-in user to the category's users field
             category.users.add(request.user)
+            # Debugging output
+            print(f"Created: {created}")    
+
+            print(f"Category: {category.name if category else 'No category found'}")
+            print(f"User {request.user.email} added to category '{category.name}'")
+            # Save the category instance
+            # Redirect to a success page or another view
             return redirect('create_quiz')  # Redirect to a category listing page or success page
     else:
         form = CategoryForm(user=request.user) # Pass user when rendering the form
 
     return render(request, 'home/create_category.html', {'form': form})
 
+# Create a new quiz
 def create_quiz(request):
     if request.method == 'POST':
         form = QuizForm(request.POST, user=request.user)  #  Pass 'user' to the form
@@ -410,3 +452,5 @@ class CustomObtainAuthToken(ObtainAuthToken):
         return Response({'token': token.key})
 
     
+
+

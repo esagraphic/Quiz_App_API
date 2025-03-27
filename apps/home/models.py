@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="subjects" )  
 
 
