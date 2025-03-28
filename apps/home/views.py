@@ -9,8 +9,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView , CreateView , DetailView
+from django.views.generic import ListView , CreateView , DetailView , UpdateView
 from .models import Subject, Category, Quiz, Question, Answer, CustomUser   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
 from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer,CustomUserSerializer
@@ -83,15 +84,26 @@ class SubjectListView(ListView):
 
         context['subject_question_data'] = subject_question_data
         return context
-####
-    def post(self, request, *args, **kwargs):
-        if 'update_subjects' in request.POST:
-            for subject in Subject.objects.all():
-                subject.updated_at = timezone.now()
-                subject.save()
-           # messages.success(request, "Subjects updated successfully!")
-            return redirect('home:subject_list')
-        return super().post(request, *args, **kwargs)
+
+
+# Remove user from subject , category and quiz
+def remove_user_from_subject(request, subject_id):
+    subject = get_object_or_404(Subject, id=subject_id)
+
+    # Remove the user from the subject
+    subject.users.remove(request.user)
+
+    # Remove the user from all related categories
+    categories = Category.objects.filter(subject=subject)
+    for category in categories:
+        category.users.remove(request.user)
+
+        # Remove the user from all related quizzes
+        quizzes = Quiz.objects.filter(category=category)
+        for quiz in quizzes:
+            quiz.users.remove(request.user)
+
+    return redirect('subject-list')  # Redirect to the subject list page or another appropriate page
 
 # Remove user from subject , category and quiz
 def remove_user_from_subject(request, subject_id):
@@ -339,7 +351,10 @@ def create_category(request):
     else:
         form = CategoryForm(user=request.user) # Pass user when rendering the form
 
-    return render(request, 'home/create_category.html', {'form': form})
+        
+    categories = Category.objects.all()
+    
+    return render(request, 'home/create_category.html', {'form': form, 'categories': categories})
 
 # Create a new quiz
 def create_quiz(request):
@@ -352,7 +367,10 @@ def create_quiz(request):
     else:
         form = QuizForm(user=request.user)  #  Pass 'user' when rendering
 
-    return render(request, 'home/create_quiz.html', {'form': form})
+        
+    quizs = Quiz.objects.all()
+    
+    return render(request, 'home/create_quiz.html', {'form': form, 'quizs': quizs})
 
 
 
@@ -486,6 +504,26 @@ class CustomObtainAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
 
+  
+class SubjectUpdateView(UpdateView):
+    model = Subject
+    template_name = 'home/update-subject.html'
+    form_class = SubjectForm
+    success_url = reverse_lazy('subject-list')
+    
+    
+class CategoryUpdateView(UpdateView):
+    model = Category
+    template_name = 'home/update-category.html'
+    form_class = CategoryForm
+    success_url = reverse_lazy('create_category') 
+    
+class QuizUpdateView(UpdateView):
+    model = Quiz
+    template_name = 'home/update-quiz.html'
+    form_class = QuizForm
+    success_url = reverse_lazy('create_quiz') 
+    
     
 
 

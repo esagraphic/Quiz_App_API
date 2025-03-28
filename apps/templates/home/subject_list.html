@@ -1,7 +1,5 @@
 {% extends "layouts/base.html" %}
-
-{% block title %} Subjects {% endblock %} 
-
+{% block title %} Subjects {% endblock %}
 {% block content %}
 <div class="content">
     <div class="row">
@@ -9,6 +7,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Subjects and Question Counts</h4>
+                    
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -17,29 +16,34 @@
                                 <tr>
                                     <th>Subject</th>
                                     <th class="text-center">Total Questions</th>
-                                    <th class="text-center">Actions</th> <!-- Added Actions column -->
+                                    <th class="text-end">Actions</th> <!-- Added column for the Update button -->
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for subject, question_count in subject_question_data %}
                                 <tr>
+                                    <!-- Subject Name -->
                                     <td>
                                         <a href="{% url 'category-detail' subject.id %}">
                                             {{ subject.name }}
                                         </a>
                                     </td>
+
+                                    <!-- Total Questions -->
                                     <td class="text-center">{{ question_count }}</td>
-                                    <td class="text-center">
-                                        <!-- Update Button -->
-                                        <a href="" class="btn btn-warning btn-sm">
+                                    
+
+                                    <!-- Update Button -->
+                                    <td class="text-end">
+                                        <a href="{% url 'update_subject' subject.id %}" class="btn btn-warning btn-sm">
                                             Update
                                         </a>
-                                        <!-- Delete Button -->
                                         <a href="{% url 'remove_subject' subject.id %}" class="btn btn-danger btn-sm" 
                                            onclick="return confirm('Are you sure you want to remove this subject?');">
                                             Delete
                                         </a>
                                     </td>
+                                    
                                 </tr>
                                 {% empty %}
                                 <tr>
@@ -48,39 +52,11 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-             <!-- End of Subjects Table -->
+                        <!-- End of Subjects Table -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-</div>
-
-<!-- Update Subjects Button -->
-<div class="row mt-4">
-<div class="col-md-12 text-center">
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit" name="update_subjects" class="btn btn-primary">Update Subjects</button>
-    </form>
-</div>
-</div>
-
-<!-- Simple Subject List (Optional) -->
-<div class="row">
-<div class="col-md-12">
-    <h1 class="mt-4">Subject List</h1>
-    <ul>
-        {% for subject, question_count in subject_question_data %}
-        <li>
-            <strong>{{ subject.name }}</strong> - {{ question_count }} questions
-        </li>
-        {% empty %}
-        <li>No subjects available.</li>
-        {% endfor %}
-    </ul>
-</div>
-</div>
-</div>
 {% endblock content %}
-
-</ul>

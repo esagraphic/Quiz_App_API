@@ -1,5 +1,7 @@
 {% extends "layouts/base.html" %}
+
 {% block title %} Create Subject {% endblock %}
+
 {% block content %}
   <div class="content">
     <div class="row">
@@ -11,13 +13,11 @@
           <div class="card-body">
             <form method="POST">
               {% csrf_token %}
-              
-              <!-- Aligning input and button in the same row -->
-              <div class="form-group d-flex align-items-center">
-                <label class="me-3">Subject Name</label>
-                <div style="flex: 1;">{{ form.name }}</div> <!-- Let input field take most space -->
-                <button type="submit" class="btn btn-primary btn-fill ms-3">Save Subject</button>
+              <div class="form-group">
+                <label>Subject Name</label>
+                {{ form.name }}
               </div>
+              <button type="submit" class="btn btn-primary btn-fill">Save Update</button>
             </form>
           </div>
         </div>

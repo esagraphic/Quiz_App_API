@@ -6,8 +6,10 @@ from .views import (
     QuizDetailView,
     QuizQuestionsView,
     UpdateQuestionView,
-
+    SubjectUpdateView,
     create_subject,
+    CategoryUpdateView,
+    QuizUpdateView,
     remove_user_from_subject,
 )
 
@@ -28,7 +30,10 @@ urlpatterns = [
      # Update Button
     path('quiz/<int:quiz_pk>/', QuizQuestionsView.as_view(), name='quiz_questions'),
     path('quiz/questions/<int:question_pk>/update/', UpdateQuestionView.as_view(), name='update_question'),
-    path('subjects/', SubjectListView.as_view(), name='subject_list'),
+    path('subjects/edit/<int:pk>/', SubjectUpdateView.as_view(), name='update_subject'),
+    path('category/edit/<int:pk>/', CategoryUpdateView.as_view(), name='update_category'),
+    path('quiz/edit/<int:pk>/', QuizUpdateView.as_view(), name='update_category'),
+    
 
 
     # Quiz questions page

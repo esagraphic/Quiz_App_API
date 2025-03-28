@@ -1,7 +1,5 @@
 {% extends "layouts/base.html" %}
-
-{% block title %} Create Category {% endblock %}
-
+{% block title %} Manage Categories {% endblock %}
 {% block content %}
   <div class="content">
     <div class="row">
@@ -13,17 +11,60 @@
           <div class="card-body">
             <form method="POST">
               {% csrf_token %}
+              <!-- Subject Input -->
               <div class="form-group">
                 <label>Subject</label>
                 {{ form.subject }}
               </div>
-              <div class="form-group">
-                <label>Category Name</label>
-                {{ form.name }}
+
+              <!-- Category Name Input and Create Button in the Same Row -->
+              <div class="form-group d-flex align-items-center">
+                <label class="me-3">Category Name</label>
+                <div style="flex: 1;">{{ form.name }}</div>
+                <button type="submit" class="btn btn-primary ms-3">Create Category</button>
               </div>
-              <button type="submit" class="btn btn-primary btn-fill">Save Category</button>
             </form>
             
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category List -->
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="title">Category List</h5>
+          </div>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Subject</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for category in categories %}
+                  <tr>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>{{ category.subject }}</td>
+                    <!-- Align Update Button Normally -->
+                    <td>
+                      <a href="{% url 'update_category' category.id %}" class="btn btn-warning btn-sm">Update</a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center">No categories found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
