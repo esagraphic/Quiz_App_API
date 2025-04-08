@@ -11,7 +11,7 @@ from django.template import loader
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView , CreateView , DetailView , UpdateView
+from django.views.generic import ListView , CreateView , DetailView , UpdateView , DeleteView
 from .models import Subject, Category, Quiz, Question, Answer, CustomUser   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
 from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer,CustomUserSerializer
@@ -524,6 +524,47 @@ class QuizUpdateView(UpdateView):
     form_class = QuizForm
     success_url = reverse_lazy('create_quiz') 
     
+class QuizDeleteView(DeleteView):
+    model = Quiz
+    template_name = 'home/delete-quiz.html'
+    form_class = QuizForm
+    success_url = reverse_lazy('create_quiz') 
+
+def update_question(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    answers = list(question.answers.all().order_by('id'))  # Make sure to preserve order
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+
+            correct_answers = form.cleaned_data['correct_answers'] 
+            
+            for i in range(4):
+                answer = answers[i]
+                answer.text = form.cleaned_data[f'answer{i+1}']
+                answer.is_correct = str(i+1) in correct_answers
+                answer.save()
+
+            return redirect('quiz-questions', quiz_pk=question.quiz.pk)
+    else:
+        initial_data = {
+            'answer1': answers[0].text if len(answers) > 0 else '',
+            'answer2': answers[1].text if len(answers) > 1 else '',
+            'answer3': answers[2].text if len(answers) > 2 else '',
+            'answer4': answers[3].text if len(answers) > 3 else '',
+            'correct_answers': [str(i+1) for i, a in enumerate(answers) if a.is_correct],
+        }
+        form = QuestionForm(instance=question, initial=initial_data)
+    return render(request, 'home/update_question.html', {'question_form': form, 'question': question})
+
+
+def delete_question(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
     
-
-
+    if request.method == 'POST':
+        question.delete()
+        return redirect('quiz-questions', quiz_pk=question.quiz.id)
+    
+    return render(request, 'home/confirm_delete.html', {'question': question})
