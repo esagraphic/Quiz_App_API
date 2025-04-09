@@ -16,7 +16,9 @@
                                 <tr>
                                     <th>Subject</th>
                                     <th class="text-center">Total Questions</th>
+                                    {%if user.is_authenticated%}
                                     <th class="text-end">Actions</th> <!-- Added column for the Update button -->
+                                    {%endif%}
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,7 +34,7 @@
                                     <!-- Total Questions -->
                                     <td class="text-center">{{ question_count }}</td>
                                     
-
+                                    {%if user.is_authenticated%}
                                     <!-- Update Button -->
                                     <td class="text-end">
                                         <a href="{% url 'update_subject' subject.id %}" class="btn btn-warning btn-sm">
@@ -43,7 +45,7 @@
                                             Delete
                                         </a>
                                     </td>
-                                    
+                                    {%endif%}
                                 </tr>
                                 {% empty %}
                                 <tr>

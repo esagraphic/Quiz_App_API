@@ -2,34 +2,7 @@
 {% block title %} Manage Categories {% endblock %}
 {% block content %}
   <div class="content">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="title">Create a New Category</h5>
-          </div>
-          <div class="card-body">
-            <form method="POST">
-              {% csrf_token %}
-              <!-- Subject Input -->
-              <div class="form-group">
-                <label>Subject</label>
-                {{ form.subject }}
-              </div>
-
-              <!-- Category Name Input and Create Button in the Same Row -->
-              <div class="form-group d-flex align-items-center">
-                <label class="me-3">Category Name</label>
-                <div style="flex: 1;">{{ form.name }}</div>
-                <button type="submit" class="btn btn-primary ms-3">Create Category</button>
-              </div>
-            </form>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- Category List -->
     <div class="row mt-4">
       <div class="col-md-12">
@@ -69,5 +42,11 @@
         </div>
       </div>
     </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCategoryModal">
+      Add new category
+    </button>
+  
+  {% include 'home/partials/new-category-modal.html' %}
   </div>
+  
 {% endblock %}
