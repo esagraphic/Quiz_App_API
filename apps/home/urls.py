@@ -6,6 +6,7 @@ from .views import (
     QuizDetailView,
     QuizQuestionsView,
     create_subject,
+    generate_quiz,
 )
 
 urlpatterns = [
@@ -24,6 +25,8 @@ urlpatterns = [
     # Quiz questions page
     path("quiz/<int:quiz_pk>/questions/", QuizQuestionsView.as_view(), name="quiz-questions"),
     
+    #excel file 
+     path('generate_quiz/', generate_quiz, name='generate_quiz'),
     # Matches any HTML file
     re_path(r"^.*\.*", views.pages, name="pages"),
 ]

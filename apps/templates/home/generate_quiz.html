@@ -1,0 +1,40 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Create Quiz{% endblock %}
+
+{% block content %}
+  <div class="content">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="title">Generate Quiz Excel Template</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="num_questions">Number of Questions</label>
+                <input type="number" id="num_questions" name="num_questions" class="form-control" min="1" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-fill">Generate Excel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if file_url %}
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <h5>Your quiz file is ready!</h5>
+              <a href="{{ file_url }}" class="btn btn-success btn-fill" download>Download your file</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

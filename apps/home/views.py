@@ -3,7 +3,9 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import os
 from django import template
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -21,6 +23,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .permissions import AllowCreateUser   # Import custom permission
+from .utils.generate_excelfile import generate_excel_file
 
 
 @login_required(login_url="/login/")
@@ -364,3 +367,21 @@ class CustomObtainAuthToken(ObtainAuthToken):
         return Response({'token': token.key})
 
     
+
+def generate_quiz(request):
+    if request.method == "POST":
+        try:
+            num_questions = int(request.POST['num_questions'])  # Get number of questions from form
+            user_id = request.user.id  # Get user ID (assuming user is logged in)
+            
+            # Generate the Excel file
+            filename = generate_excel_file(user_id, num_questions)
+
+            # Generate the file URL
+            file_url = os.path.join(settings.MEDIA_URL, 'exports', filename)
+
+            return render(request, 'home/generate_quiz.html', {'file_url': file_url})
+        except Exception as e:
+            return HttpResponse(f"❌ Error: {e}")
+
+    return render(request, 'home/generate_quiz.html')

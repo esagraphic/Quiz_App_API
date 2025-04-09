@@ -111,7 +111,7 @@ DATABASES = {
         'NAME': 'quizappdb',
         'USER': 'quizappuser',
         'PASSWORD': 'password',
-        'HOST': 'postgres', # set in docker-compose.yml file for postgres container but if you wnna use local postgres then set 'localhost'
+        'HOST': 'localhost', # set in docker-compose.yml file for postgres container but if you wnna use local postgres then set 'localhost'
         'PORT': '',
     }
 }
@@ -172,3 +172,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+
+# settings.py
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(CORE_DIR, 'media')
