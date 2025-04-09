@@ -24,6 +24,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .permissions import AllowCreateUser   # Import custom permission
 from .utils.generate_excelfile import generate_excel_file
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.utils.text import get_valid_filename
+from django.http import FileResponse
+
+
 
 
 @login_required(login_url="/login/")
@@ -369,19 +375,63 @@ class CustomObtainAuthToken(ObtainAuthToken):
     
 
 def generate_quiz(request):
+    context = {}
+
     if request.method == "POST":
-        try:
-            num_questions = int(request.POST['num_questions'])  # Get number of questions from form
-            user_id = request.user.id  # Get user ID (assuming user is logged in)
-            
-            # Generate the Excel file
-            filename = generate_excel_file(user_id, num_questions)
+        if 'upload_excel' in request.POST:
+            # Handle Excel file upload
+            try:
+                uploaded_file = request.FILES['quiz_file']
+                if not uploaded_file.name.endswith('.xlsx'):
+                    return HttpResponse("❌ Only .xlsx files are allowed.")
 
-            # Generate the file URL
-            file_url = os.path.join(settings.MEDIA_URL, 'exports', filename)
+                # Sanitize the file name
+                sanitized_filename = get_valid_filename(uploaded_file.name)
+                sanitized_filename = os.path.basename(sanitized_filename)
 
-            return render(request, 'home/generate_quiz.html', {'file_url': file_url})
-        except Exception as e:
-            return HttpResponse(f"❌ Error: {e}")
+                # Save to 'media/user_uploads/'
+                relative_path = os.path.join('user_uploads', sanitized_filename)
+                default_storage.save(relative_path, ContentFile(uploaded_file.read()))
 
-    return render(request, 'home/generate_quiz.html')
+                # Pass upload success to template
+                context['upload_success'] = True
+                context['uploaded_path'] = os.path.join(settings.MEDIA_URL, 'user_uploads', sanitized_filename)
+
+            except Exception as e:
+                return HttpResponse(f"❌ Upload Error: {e}")
+
+        else:
+            # Generate Excel template
+            try:
+                num_questions = int(request.POST['num_questions'])
+                user_id = request.user.id  # Assumes user is logged in
+                filename = generate_excel_file(user_id, num_questions)
+
+                # Prepare the file URL for download
+                file_path = os.path.join(settings.MEDIA_ROOT, 'exports', filename)
+
+                # Pass the filename to the context
+                context['filename'] = filename
+
+            except Exception as e:
+                return HttpResponse(f"❌ Error: {e}")
+
+    return render(request, 'home/generate_quiz.html', context)
+
+
+def download_quiz_file(request):
+    # Get the filename from the GET request
+    filename = request.GET.get('filename')
+
+    # Construct the full path to the file
+    file_path = os.path.join(settings.MEDIA_ROOT, 'exports', filename)
+
+    # Ensure the file exists
+    if os.path.exists(file_path):
+        # Open the file and serve it as a download response
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = f'attachment; filename="{filename}"'
+            return response
+    else:
+        return HttpResponse("❌ File not found.")

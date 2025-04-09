@@ -24,17 +24,56 @@
       </div>
     </div>
 
-    {% if file_url %}
+    {% if filename %}
       <div class="row">
         <div class="col-md-8">
           <div class="card">
             <div class="card-body">
               <h5>Your quiz file is ready!</h5>
-              <a href="{{ file_url }}" class="btn btn-success btn-fill" download>Download your file</a>
+              <!-- Form to trigger download -->
+              <form method="GET" action="{% url 'download_quiz_file' %}">
+                <input type="hidden" name="filename" value="{{ filename }}">
+                <button type="submit" class="btn btn-success btn-fill">Download your file</button>
+              </form>
             </div>
           </div>
         </div>
       </div>
     {% endif %}
+    
+    <div class="row mt-4">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="title">Upload Quiz Excel File</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="quiz_file">Choose Excel File (.xlsx)</label>
+                <input type="file" id="quiz_file" name="quiz_file" accept=".xlsx" class="form-control" required>
+              </div>
+              <button type="submit" name="upload_excel" class="btn btn-info btn-fill">Upload Excel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {% if upload_success %}
+      <div class="row">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <h5>✅ File uploaded successfully!</h5>
+              <p>Saved at: <code>{{ uploaded_path }}</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    
   </div>
+  
 {% endblock %}

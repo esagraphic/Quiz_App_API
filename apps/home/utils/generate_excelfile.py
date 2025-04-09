@@ -4,8 +4,9 @@ from openpyxl import load_workbook
 from openpyxl.styles import Border, Side
 from django.conf import settings
 
+
 def generate_filename(user_id):
-    # Generate unique filename based on user_id and timestamp
+    # Generate a unique filename based on user_id and timestamp
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"quiz_template_{user_id}_{timestamp}.xlsx"
 
@@ -86,4 +87,3 @@ def generate_excel_file(user_id, num_questions):
     print(f"✅ Excel file '{filename}' generated successfully.")
     
     return filename  # Return the filename for download link
-

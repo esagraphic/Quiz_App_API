@@ -177,4 +177,4 @@ REST_FRAMEWORK = {
 # settings.py
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(CORE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
