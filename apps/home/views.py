@@ -83,6 +83,7 @@ class SubjectListView(ListView):
             subject_question_data.append((subject, question_count))
 
         context['subject_question_data'] = subject_question_data
+        context['form'] = SubjectForm()
         return context
 
 

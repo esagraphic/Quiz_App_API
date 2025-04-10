@@ -8,29 +8,7 @@
           <div class="card-header">
             <h5 class="title">Create a New Quiz</h5>
           </div>
-          <div class="card-body">
-            <form method="POST">
-              {% csrf_token %}
-              <!-- Category Field -->
-              <div class="form-group">
-                <label>Category</label>
-                {{ form.category }}
-              </div>
-              <!-- Quiz Name Field and Save Button -->
-              <div class="form-group d-flex align-items-center">
-                <label for="quiz-name" class="me-3">Quiz Name</label>
-                <div style="flex: 1;">
-                  {{ form.name }}
-                </div>
-                <button type="submit" class="btn btn-primary ms-3">Save Quiz</button>
-              </div>
-              <!-- Private Checkbox -->
-              <div class="form-group mt-3">
-                <label>Private</label>
-                {{ form.is_private }}
-              </div>
-            </form>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -79,5 +57,9 @@
         </div>
       </div>
     </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createQuizModal">
+      Add new quiz
+    </button>
+    {% include 'home/partials/new-create-quiz.html' %}
   </div>
 {% endblock %}
