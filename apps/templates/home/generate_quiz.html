@@ -14,8 +14,10 @@
         <div class="card-body">
           <form method="POST">
             {% csrf_token %}
+         
             <div class="form-group">
               <label for="num_questions">Number of Questions</label>
+              
               <input type="number" id="num_questions" name="num_questions" class="form-control" min="1" required>
             </div>
             <button type="submit" class="btn btn-primary btn-fill">Generate Excel</button>
@@ -24,7 +26,7 @@
       </div>
     </div>
   </div>
-
+ 
   {% if filename %}
   <div class="row">
     <div class="col-md-12">
@@ -44,9 +46,9 @@
 
   <!-- Upload Excel File Section -->
   <div class="row mt-4">
-    <div class="col-md-12">
+    <div class="col-md-4 offset-md-4">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header text-center">
           <h4 class="card-title">📤 Upload Quiz Excel File</h4>
         </div>
         <div class="card-body">
@@ -100,9 +102,17 @@
   <!-- Display AI-generated Questions -->
   <div class="row mt-4">
     <div class="col-md-12">
+      
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">🧠 AI-Generated Quiz Questions</h4>
+          <h4 class="card-title">🧠 Your Imported Questions From Excel File</h4>
+          <!-- Render only the 'quiz' field from the QuestionForm -->
+          <label class="block mb-2">Select Quiz:</label>
+          <div style="width: 33%; display: inline-block;">
+            {{ question_form.quiz }} <!-- This will render the 'quiz' dropdown field -->
+          </div>
+          <label class="d-block mt-3">Please review your questions. If all is good, select your quiz from the dropdown and save to the database.</label>
+          <button type="submit" class="btn btn-success btn-fill mt-2">Save to Database</button>
         </div>
         <div class="card-body">
           <ul class="list-group">
