@@ -3,82 +3,76 @@
 {% block title %}Create Quiz{% endblock %}
 
 {% block content %}
-  <div class="content">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="title">Generate Quiz Excel Template</h5>
-          </div>
-          <div class="card-body">
-            <form method="POST">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="num_questions">Number of Questions</label>
-                <input type="number" id="num_questions" name="num_questions" class="form-control" min="1" required>
-              </div>
-              <button type="submit" class="btn btn-primary btn-fill">Generate Excel</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {% if filename %}
-      <div class="row">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-body">
-              <h5>Your quiz file is ready!</h5>
-              <!-- Form to trigger download -->
-              <form method="GET" action="{% url 'download_quiz_file' %}">
-                <input type="hidden" name="filename" value="{{ filename }}">
-                <button type="submit" class="btn btn-success btn-fill">Download your file</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-    
-    <div class="row mt-4">
-      <div class="col-md-8">
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <!-- Generate Excel Template Card -->
       <div class="card">
         <div class="card-header">
-        <h5 class="title">Upload Quiz Excel File</h5>
+          <h4 class="card-title">📄 Generate Quiz Excel Template</h4>
         </div>
         <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="form-group">
-          <label for="quiz_file">Choose Excel File (.xlsx)</label>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-            <span class="input-group-text">Upload</span>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="num_questions">Number of Questions</label>
+              <input type="number" id="num_questions" name="num_questions" class="form-control" min="1" required>
             </div>
-            <div class="custom-file">
-            <input type="file" id="quiz_file" name="quiz_file" accept=".xlsx" class="custom-file-input" required onchange="updateFileName()">
-            <label class="custom-file-label" for="quiz_file" id="file_label">Choose file</label>
-            </div>
-          </div>
-          </div>
-          <button type="submit" name="upload_excel" class="btn btn-info btn-fill">Upload Excel</button>
-        </form>
+            <button type="submit" class="btn btn-primary btn-fill">Generate Excel</button>
+          </form>
         </div>
       </div>
+    </div>
+  </div>
+
+  {% if filename %}
+  <div class="row">
+    <div class="col-md-12">
+      <!-- Download File Card -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">✅ Your quiz file is ready!</h5>
+          <form method="GET" action="{% url 'download_quiz_file' %}">
+            <input type="hidden" name="filename" value="{{ filename }}">
+            <button type="submit" class="btn btn-success btn-fill">Download your file</button>
+          </form>
+        </div>
       </div>
     </div>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Upload</span>
-      </div>
-      <div class="custom-file">
-        <input type="file" class="custom-file-input" id="inputGroupFile01">
-        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+  </div>
+  {% endif %}
+
+  <!-- Upload Excel File Section -->
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">📤 Upload Quiz Excel File</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="quiz_file">Choose Excel File (.xlsx)</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-paperclip"></i></span>
+                </div>
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="quiz_file" name="quiz_file" accept=".xlsx" required onchange="updateFileName()">
+                  <label class="custom-file-label" for="quiz_file" id="file_label">Choose file</label>
+                </div>
+              </div>
+            </div>
+            <button type="submit" name="upload_excel" class="btn btn-info btn-fill">Upload Excel</button>
+          </form>
+        </div>
       </div>
     </div>
-    <script>
-      function updateFileName() {
+  </div>
+
+  <script>
+    function updateFileName() {
       const fileInput = document.getElementById('quiz_file');
       const fileLabel = document.getElementById('file_label');
       if (fileInput.files.length > 0) {
@@ -86,22 +80,69 @@
       } else {
         fileLabel.textContent = 'Choose file';
       }
-      }
-    </script>
-    
-    {% if upload_success %}
-      <div class="row">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-body">
-              <h5>✅ File uploaded successfully!</h5>
-              <p>Saved at: <code>{{ uploaded_path }}</code></p>
-            </div>
-          </div>
+    }
+  </script>
+
+  {% if upload_success %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h5>✅ File uploaded successfully!</h5>
+          <p>Saved at: <code>{{ uploaded_path }}</code></p>
         </div>
       </div>
-    {% endif %}
-    
+    </div>
   </div>
-  
-{% endblock %}
+  {% endif %}
+
+  {% if script_output %}
+  <!-- Display AI-generated Questions -->
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">🧠 AI-Generated Quiz Questions</h4>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            {% for question in script_output %}
+            <li class="list-group-item mb-4">
+              <h5><strong>Question {{ forloop.counter }}:</strong> {{ question.question }}</h5>
+
+              <p><strong>Options:</strong></p>
+              <ul>
+                {% for key, value in question.options.items %}
+                <li><strong>{{ key }}:</strong> {{ value }}</li>
+                {% endfor %}
+              </ul>
+
+              <p><strong>Correct Answer:</strong> {{ question.correct_answer }}</p>
+
+              <p><strong>Explanation:</strong> {{ question.explanation }}</p>
+
+              <p><strong>Example:</strong></p>
+              <pre>{{ question.example }}</pre>
+
+              <p><strong>Why Not (for other options):</strong></p>
+              <ul>
+                {% for key, reason in question.why_not.items %}
+                <li><strong>{{ key }}:</strong> {{ reason }}</li>
+                {% endfor %}
+              </ul>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <p>No questions to display.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

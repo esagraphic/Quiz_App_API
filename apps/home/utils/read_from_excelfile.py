@@ -1,7 +1,12 @@
 import openpyxl
+import sys
+import json  # For returning the data as JSON
 
 # Load the Excel file
-wb = openpyxl.load_workbook('quiz_template_2_20250409_095114.xlsx')
+file_path = sys.argv[1]
+#print(f"Loading file: {file_path}")
+
+wb = openpyxl.load_workbook(file_path)
 # Check if the file was loaded successfully
 ws = wb.active  # Assuming the data is in the first sheet
 
@@ -33,7 +38,11 @@ for row in ws.iter_rows(min_row=2, values_only=True):
         }
     }
     my_data.append(data)
+    
 
+
+print(json.dumps(my_data))
 # Save the list as a Python file in the same directory
-with open('exported.py', 'w') as file:
-    file.write(f"my_data = {my_data}")
+# with open('exported.py', 'w') as file:
+#     file.write(f"my_data = {my_data}")
+

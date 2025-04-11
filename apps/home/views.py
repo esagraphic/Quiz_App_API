@@ -3,7 +3,9 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import json
 import os
+import subprocess
 from django import template
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -395,7 +397,35 @@ def generate_quiz(request):
 
                 # Pass upload success to template
                 context['upload_success'] = True
+                
                 context['uploaded_path'] = os.path.join(settings.MEDIA_URL, 'user_uploads', sanitized_filename)
+
+                file_path = os.path.join(settings.MEDIA_ROOT, 'user_uploads', sanitized_filename)
+
+                # Print the path to ensure it's correct
+                print("File path:", file_path)
+
+                # Absolute path to the script in utils folder
+                script_path = os.path.join(settings.BASE_DIR, 'apps', 'home', 'utils', 'read_from_excelfile.py')
+
+
+                # Pass the file path to the script
+                result = subprocess.run(['python', script_path, file_path], capture_output=True, text=True)
+                # Check if the script ran successfully
+                if result.returncode != 0:
+                    return HttpResponse(f"❌ Error running script: {result.stderr}")
+                # Print the output from the script
+                try:
+                    parsed_output = json.loads(result.stdout)
+                except json.JSONDecodeError as e:
+                    return HttpResponse(f"❌ Failed to parse script output as JSON: {str(e)}")
+
+                context['script_output'] = parsed_output
+
+                
+
+
+                
 
             except Exception as e:
                 return HttpResponse(f"❌ Upload Error: {e}")
