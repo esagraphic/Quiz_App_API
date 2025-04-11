@@ -2,6 +2,11 @@
 {% block title %} Manage Categories {% endblock %}
 {% block content %}
   <div class="content">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCategoryModal">
+      Add new category
+    </button>
+  
+  {% include 'home/partials/new-category-modal.html' %}
     
     <!-- Category List -->
     <div class="row mt-4">
@@ -42,11 +47,7 @@
         </div>
       </div>
     </div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCategoryModal">
-      Add new category
-    </button>
-  
-  {% include 'home/partials/new-category-modal.html' %}
+
   </div>
   
 {% endblock %}
