@@ -434,9 +434,31 @@ class CustomObtainAuthToken(ObtainAuthToken):
 def generate_quiz(request):
     context = {}
     question_form = QuestionForm()
+    
 
     if request.method == "POST":
-        if "upload_excel" in request.POST:
+        if "save_db" in request.POST:
+            selected_quiz_id = request.POST.get("quiz")
+            print("Selected Quiz ID:", selected_quiz_id)
+            my_data = request.session.get("parsed_output")
+            print("Parsed Output:", my_data)
+            script_path = os.path.join(
+                settings.BASE_DIR, "apps", "home", "utils", "insert_to_db.py"
+            )
+
+            # Convert my_data to JSON string before passing it to the script
+            my_data_json = json.dumps(my_data)
+
+            # Pass the file path and data to the script
+            result = subprocess.run(
+                ["python", script_path, selected_quiz_id, my_data_json],
+                capture_output=True,
+                text=True,
+            )
+            print("Result:", result)
+            # return render(request, "home/generate_quiz.html", context)
+
+        elif "upload_excel" in request.POST:
             # Handle Excel file upload
             try:
                 uploaded_file = request.FILES["quiz_file"]
@@ -486,10 +508,12 @@ def generate_quiz(request):
                     )
 
                 context["script_output"] = parsed_output
+                # Save the parsed output to the session so it can be used later in the view
+                request.session["parsed_output"] = parsed_output
             except Exception as e:
                 return HttpResponse(f"❌ Upload Error: {e}")
 
-        else:
+        elif "generate_excel" in request.POST:
             # Generate Excel template
             try:
                 num_questions = int(request.POST["num_questions"])

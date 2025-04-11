@@ -1,0 +1,31 @@
+<!-- Generate Excel Template Modal -->
+<div class="modal fade" id="generateExcelModal" tabindex="-1" role="dialog" aria-labelledby="generateExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="generateExcelModalLabel">📄 Generate Quiz Excel Template</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <form method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+              <label for="num_questions">Number of Questions</label>
+              <input type="number" id="num_questions" name="num_questions" class="form-control" min="1" required>
+            </div>
+            
+            <button type="submit" name="generate_excel" class="btn btn-primary btn-fill">Generate Excel</button>
+          </form>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
