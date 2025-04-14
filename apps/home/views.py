@@ -361,4 +361,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
 
-    
+
+def generate_quiz_by_ai_view(request):
+    return render(request, "home/generate_quiz_by_ai.html")

@@ -40,6 +40,12 @@
                             <p>Create Quiz</p>
                         </a>
                     </li>
+                    <li>
+                        <a href="{% url 'generate-quiz-ai' %}">
+                          <i class="fa fa-magic"></i>
+                          <p>Generate Quiz by AI</p>
+                        </a>
+                      </li>
                     <li class="{% if 'add_question' in segment %} active {% endif %}">
                         <a href="{% url 'add_question' %}">
                             <i class="tim-icons icon-bulb-63"></i>

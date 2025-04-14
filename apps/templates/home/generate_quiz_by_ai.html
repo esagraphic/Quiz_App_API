@@ -1,0 +1,39 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Generate Quiz by AI{% endblock %}
+
+{% block content %}
+<div class="content">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Generate a Quiz Using AI</h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="topic">Topic</label>
+              <input type="text" name="topic" class="form-control" id="topic" placeholder="e.g. Django Middleware">
+            </div>
+
+            <div class="form-group">
+              <label for="num_questions">Number of Questions</label>
+              <input type="number" name="num_questions" class="form-control" id="num_questions" min="1" max="10" value="3">
+            </div>
+
+            <div class="form-group">
+              <label for="is_private">
+                <input type="checkbox" name="is_private" id="is_private"> Private Quiz
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-fill">Generate Quiz</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

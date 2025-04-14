@@ -6,6 +6,7 @@ from .views import (
     QuizDetailView,
     QuizQuestionsView,
     create_subject,
+    generate_quiz_by_ai_view,
 )
 
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
     path("add_question/", views.add_question, name="add_question"),
     path("create_category/", views.create_category, name="create_category"),
     path("create_quiz/", views.create_quiz, name="create_quiz"),
+    path("generate-quiz/", generate_quiz_by_ai_view, name="generate-quiz-ai"),
     
     # Quiz questions page
     path("quiz/<int:quiz_pk>/questions/", QuizQuestionsView.as_view(), name="quiz-questions"),
