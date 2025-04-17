@@ -35,7 +35,7 @@ urlpatterns = [
     path('quiz/questions/<int:question_pk>/update/', UpdateQuestionView.as_view(), name='update_question'),
     path('subjects/edit/<int:pk>/', SubjectUpdateView.as_view(), name='update_subject'),
     path('category/edit/<int:pk>/', CategoryUpdateView.as_view(), name='update_category'),
-    path('quiz/edit/<int:pk>/', QuizUpdateView.as_view(), name='update_category'),
+    path('quiz/edit/<int:pk>/', QuizUpdateView.as_view(), name='update_quiz'),
     
     #Delete Button
     path('quiz/delete/<int:pk>/', QuizDeleteView.as_view(), name='delete_quiz'),

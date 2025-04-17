@@ -353,7 +353,7 @@ def create_category(request):
         form = CategoryForm(user=request.user) # Pass user when rendering the form
 
         
-    categories = Category.objects.all()
+    categories = Category.objects.filter(users=request.user)  # Get categories for the logged-in user
     
     return render(request, 'home/create_category.html', {'form': form, 'categories': categories})
 
@@ -369,7 +369,8 @@ def create_quiz(request):
         form = QuizForm(user=request.user)  #  Pass 'user' when rendering
 
         
-    quizs = Quiz.objects.all()
+    quizs = Quiz.objects.filter(users=request.user)  # Get quizzes for the logged-in user
+    print(f"user id is {request.user.id}")
     
     return render(request, 'home/create_quiz.html', {'form': form, 'quizs': quizs})
 
@@ -518,12 +519,36 @@ class CategoryUpdateView(UpdateView):
     template_name = 'home/update-category.html'
     form_class = CategoryForm
     success_url = reverse_lazy('create_category') 
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Category.objects.filter(users=self.request.user)
+        else:
+            return Category.objects.none()
+        
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # Pass the logged-in user to the form
+        kwargs['user'] = self.request.user
+        return kwargs
     
 class QuizUpdateView(UpdateView):
     model = Quiz
     template_name = 'home/update-quiz.html'
     form_class = QuizForm
     success_url = reverse_lazy('create_quiz') 
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Quiz.objects.filter(users=self.request.user)
+        else:
+            return Quiz.objects.none()
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # Pass the logged-in user to the form
+        kwargs['user'] = self.request.user
+        return kwargs
     
 class QuizDeleteView(DeleteView):
     model = Quiz
@@ -536,7 +561,7 @@ def update_question(request, question_id):
     answers = list(question.answers.all().order_by('id'))  # Make sure to preserve order
 
     if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question)
+        form = QuestionForm(request.POST, instance=question , user=request.user)  # Pass logged-in user
         if form.is_valid():
             form.save()
 
@@ -557,7 +582,7 @@ def update_question(request, question_id):
             'answer4': answers[3].text if len(answers) > 3 else '',
             'correct_answers': [str(i+1) for i, a in enumerate(answers) if a.is_correct],
         }
-        form = QuestionForm(instance=question, initial=initial_data)
+        form = QuestionForm(instance=question, initial=initial_data , user=request.user)  # Pass logged-in user
     return render(request, 'home/update_question.html', {'question_form': form, 'question': question})
 
 

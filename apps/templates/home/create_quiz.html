@@ -42,11 +42,8 @@
                       <td>{{ quiz.category.name }}</td> <!-- Assuming quiz.category is a related object -->
                       <td>
                         <!-- Update Button -->
-                        <a href="" class="btn btn-warning btn-sm">Update</a>
-                        <!-- Delete Button -->
-                        <a href="{% url 'delete_quiz' quiz.id %}" class="btn btn-danger btn-sm ms-2">
-                          Delete
-                        </a>
+                        <a href="{% url 'update_quiz' quiz.id %}" class="btn btn-warning btn-sm">Update</a>
+                        
                       </td>
                     </tr>
                   {% empty %}
