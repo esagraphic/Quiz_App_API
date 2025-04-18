@@ -14,13 +14,18 @@
           <form method="post">
             {% csrf_token %}
             <div class="form-group">
-              <label for="topic">Topic</label>
-              <input type="text" name="topic" class="form-control" id="topic" placeholder="e.g. Django Middleware">
+                <label for="category">Category</label>
+                <select name="category" class="form-control" id="category" required>
+                  <option value="" disabled selected>Select a Category</option>
+                  {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                  {% endfor %}
+                </select>
             </div>
 
             <div class="form-group">
               <label for="num_questions">Number of Questions</label>
-              <input type="number" name="num_questions" class="form-control" id="num_questions" min="1" max="10" value="3">
+              <input type="number" name="num_questions" class="form-control" id="num_questions" min="1">
             </div>
 
             <div class="form-group">
@@ -34,6 +39,43 @@
         </div>
       </div>
     </div>
+  </div> <!-- closes the first row -->
+
+  {% if generated_questions %}
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Generated Questions</h5>
+        </div>
+        <div class="card-body">
+          {% for q in generated_questions %}
+            <div class="mb-4">
+              <p><strong>{{ q.question }}</strong></p>
+              <ul>
+                <li>A: {{ q.options.a }}</li>
+                <li>B: {{ q.options.b }}</li>
+                <li>C: {{ q.options.c }}</li>
+                <li>D: {{ q.options.d }}</li>
+              </ul>
+              <p><strong>Correct Answer:</strong> {{ q.correct_answer }}</p>
+              <p><strong>Explanation:</strong> {{ q.explanation }}</p>
+              {% if q.example %}
+              <p><strong>Example:</strong><br><pre>{{ q.example }}</pre></p>
+              {% endif %}
+              <p><strong>Why Not:</strong></p>
+              <ul>
+                {% for key, value in q.why_not.items %}
+                  <li>{{ key|upper }}: {{ value }}</li>
+                {% endfor %}
+              </ul>
+              <hr>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
+  {% endif %}
 </div>
 {% endblock %}

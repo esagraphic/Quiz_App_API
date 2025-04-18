@@ -172,3 +172,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
