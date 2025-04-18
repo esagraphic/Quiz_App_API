@@ -1,0 +1,27 @@
+<tr id="subject-row-{{ subject.id }}">
+
+    <!-- Subject Name -->
+    <td>
+        <a href="{% url 'category-detail' subject.id %}">
+            {{ subject.name }}
+        </a>
+    </td>
+
+    <!-- Total Questions -->
+    <td class="text-center">{{ question_count }}</td>
+    
+    {%if user.is_authenticated%}
+    <!-- Update Button -->
+    <td class="text-end">
+        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#update-subject-modal-{{ subject.id }}">
+            Update
+        </a>                                        
+        <a href="{% url 'remove_subject' subject.id %}" class="btn btn-danger btn-sm" 
+           onclick="return confirm('Are you sure you want to remove this subject?');">
+            Delete
+        </a>
+    </td>
+
+    {% include 'home/partials/update-subject-modal.html' %}
+    {%endif%}
+</tr>

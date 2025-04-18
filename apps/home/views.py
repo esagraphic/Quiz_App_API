@@ -23,6 +23,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .permissions import AllowCreateUser   # Import custom permission
 from django.utils import timezone
+from django.template.loader import render_to_string
+
 
 @login_required(login_url="/login/")
 def index(request):
@@ -509,9 +511,29 @@ class CustomObtainAuthToken(ObtainAuthToken):
   
 class SubjectUpdateView(UpdateView):
     model = Subject
-    template_name = 'home/update-subject.html'
     form_class = SubjectForm
-    success_url = reverse_lazy('subject-list')
+    template_name = 'home/partials/update-subject-modal.html'
+
+    def form_valid(self, form):
+        # Save the subject
+        subject = form.save()
+
+        # Render the updated subject row for HTMX
+        context = {
+            'subject': subject,
+            'question_count': Question.objects.filter(quiz__category__subject=subject).count()
+        }
+        html= render(self.request, 'home/partials/subject-rows.html', context)
+        response = HttpResponse(html)
+        response['HX-Trigger'] = 'subjectUpdated'  # Trigger HTMX event
+        return response
+    
+
+       
+
+    # def get_success_url(self):
+        # You can redirect to a success page or return an empty response
+        # return reverse_lazy('subject-list')
     
     
 class CategoryUpdateView(UpdateView):
