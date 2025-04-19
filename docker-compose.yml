@@ -18,18 +18,18 @@ services:
     networks:
       - app-network_live
 
-  nginx:
-    image: nginx:latest
-    container_name: nginx_server
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - static_volume_live:/usr/src/app/staticfiles
-    depends_on:
-      - web
-    networks:
-      - app-network_live
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx_server
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx:/etc/nginx/conf.d
+  #     - static_volume_live:/usr/src/app/staticfiles
+  #   depends_on:
+  #     - web
+  #   networks:
+  #     - app-network_live
 
   postgres:
     image: postgres:15
