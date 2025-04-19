@@ -39,7 +39,7 @@ services:
     environment:
       POSTGRES_DB: p24_db
       POSTGRES_USER: p24_db_usr
-      POSTGRES_PASSWORD: p24_db_pwd
+      POSTGRES_PASSWORD: p24_db_pwdpassword
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports: # not necessary to expose the port
