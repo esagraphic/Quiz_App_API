@@ -1,35 +1,63 @@
 {% extends "layouts/base.html" %}
-
 {% block title %} Create Quiz {% endblock %}
-
 {% block content %}
   <div class="content">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createQuizModal">
+      Add new quiz
+    </button>
+    {% include 'home/partials/new-create-quiz.html' %}
     <div class="row">
       <div class="col-md-8">
         <div class="card">
-          <div class="card-header">
+         <!-- <div class="card-header">
             <h5 class="title">Create a New Quiz</h5>
+          </div> -->
+          
+        </div>
+      </div>
+    </div>
+    <!-- Quiz List Section -->
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="title">Quiz List</h5>
           </div>
           <div class="card-body">
-            <form method="POST">
-              {% csrf_token %}
-              <div class="form-group">
-                <label>Category</label>
-                {{ form.category }}
-              </div>
-              <div class="form-group">
-                <label>Quiz Name</label>
-                {{ form.name }}
-              </div>
-              <div class="form-group">
-                <label>Private</label>
-                {{ form.is_private }}
-              </div>
-              <button type="submit" class="btn btn-primary btn-fill">Save Quiz</button>
-            </form>
+            <div class="table-responsive">
+              <table class="table tablesorter">
+                <thead class="text-primary">
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for quiz in quizs %}
+                    <tr>
+                      <td>{{ quiz.id }}</td>
+                      <td>{{ quiz.name }}</td>
+                      <td>{{ quiz.category.name }}</td> <!-- Assuming quiz.category is a related object -->
+                      <td>
+                        <!-- Update Button -->
+                        <a href="{% url 'update_quiz' quiz.id %}" class="btn btn-warning btn-sm">Update</a>
+                        
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="4" class="text-center">No quizzes found.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
+   
   </div>
 {% endblock %}

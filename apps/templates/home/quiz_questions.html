@@ -16,13 +16,14 @@
                     <div id="quiz-container">
                         <form method="POST">
                             {% csrf_token %}
-                            
                             <div class="table-responsive">
                                 <table class="table tablesorter">
                                     <thead class="text-primary">
+                                        <!-- Updated header to include "Actions" -->
                                         <tr>
                                             <th>Question</th>
                                             <th>Answers</th>
+                                            <th>Actions</th> <!-- New column for update/delete buttons -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -35,17 +36,31 @@
                                                     <input type="checkbox" name="question_{{ question.id }}" value="{{ answer.id }}" id="answer_{{ answer.id }}">
                                                     <label for="answer_{{ answer.id }}">{{ answer.text }}</label>
                                                 </div>
-                                                {% endfor %}
-                                            </td>
+                                                {% endfor %}                                    
+                                            </td>  
+                                            <!-- Actions column -->
+                                            <td>
+                                                <div class="btn-group">
+                                                    <!-- Update button -->
+                                                    <a href="{% url 'update-question' question.id %}" class="btn btn-warning btn-sm">Update</a>
+                                                    <!-- Delete button -->
+                                                    <a href="{% url 'delete-question' question.id %}" class="btn btn-warning btn-sm">Delete</a>
+                                                </div>
+                                            </td>                                             
                                         </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
-                            
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
+
+
+
+
+
+
 
                     {% if results %}
                     <!-- Result Section -->

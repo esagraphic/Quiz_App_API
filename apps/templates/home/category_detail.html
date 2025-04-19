@@ -21,11 +21,13 @@
                             </thead>
                             <tbody>
                                 {% for category, question_count in category_question_data %}
+                                
                                 <tr>
                                     <td>
                                         <a href="{% url 'quiz-detail' pk=category.pk %}">{{ category.name }}</a>  <!-- Link to quiz list -->
                                     </td>
                                     <td class="text-center">{{ question_count }}</td>
+                                    
                                 </tr>
                                 {% empty %}
                                 <tr>

@@ -11,8 +11,8 @@ class CustomUser(AbstractUser):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="subjects" , default=1)
+    name = models.CharField(max_length=255)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="subjects" )  
 
 
     def __str__(self):
@@ -21,6 +21,8 @@ class Subject(models.Model):
 class Category(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="categories")
     name = models.CharField(max_length=255)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="category" )  
+
 
     def __str__(self):
         return f"{self.subject.name} - {self.name}"
@@ -29,6 +31,8 @@ class Quiz(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="quizzes")
     name = models.CharField(max_length=255)
     is_private = models.BooleanField(default=False)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="quiz" )  
+
 
     def __str__(self):
         return f"{self.category.name} - {self.name}"

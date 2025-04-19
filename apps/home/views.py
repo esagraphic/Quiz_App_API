@@ -9,8 +9,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView , CreateView , DetailView
+from django.views.generic import ListView , CreateView , DetailView , UpdateView , DeleteView
 from .models import Subject, Category, Quiz, Question, Answer, CustomUser   
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
 from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer,CustomUserSerializer
@@ -21,7 +22,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .permissions import AllowCreateUser   # Import custom permission
-
+from django.utils import timezone
 
 @login_required(login_url="/login/")
 def index(request):
@@ -62,23 +63,83 @@ class SubjectListView(ListView):
     template_name = 'home/subject_list.html'
     context_object_name = 'subjects'
 
+    def get_queryset(self):
+        # Ensure the user is authenticated
+        if self.request.user.is_authenticated:
+            # Filter subjects where the logged-in user is part of the users field
+            return Subject.objects.filter(users=self.request.user)
+        else:
+            # Return empty queryset for anonymous users
+            return Subject.objects.none()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         subject_question_data = []
 
-        for subject in Subject.objects.all():
+        # Loop through the filtered subjects only
+        for subject in self.get_queryset():
+            # Get the number of questions related to each subject
             question_count = Question.objects.filter(quiz__category__subject=subject).count()
             subject_question_data.append((subject, question_count))
 
         context['subject_question_data'] = subject_question_data
+        context['form'] = SubjectForm()
         return context
 
 
+# Remove user from subject , category and quiz
+def remove_user_from_subject(request, subject_id):
+    subject = get_object_or_404(Subject, id=subject_id)
+
+    # Remove the user from the subject
+    subject.users.remove(request.user)
+
+    # Remove the user from all related categories
+    categories = Category.objects.filter(subject=subject)
+    for category in categories:
+        category.users.remove(request.user)
+
+        # Remove the user from all related quizzes
+        quizzes = Quiz.objects.filter(category=category)
+        for quiz in quizzes:
+            quiz.users.remove(request.user)
+
+    return redirect('subject-list')  # Redirect to the subject list page or another appropriate page
+
+# Remove user from subject , category and quiz
+def remove_user_from_subject(request, subject_id):
+    subject = get_object_or_404(Subject, id=subject_id)
+
+    # Remove the user from the subject
+    subject.users.remove(request.user)
+
+    # Remove the user from all related categories
+    categories = Category.objects.filter(subject=subject)
+    for category in categories:
+        category.users.remove(request.user)
+
+        # Remove the user from all related quizzes
+        quizzes = Quiz.objects.filter(category=category)
+        for quiz in quizzes:
+            quiz.users.remove(request.user)
+
+    return redirect('subject-list')  # Redirect to the subject list page or another appropriate page
+
+
 class CategoryDetailView(DetailView):
-    model = Subject
+    model = Category
     template_name = 'home/category_detail.html'
     context_object_name = 'subject'
 
+    def get_queryset(self):
+        # Ensure the user is authenticated
+        if self.request.user.is_authenticated:
+            # Filter subjects where the logged-in user is part of the users field
+            return Subject.objects.filter(users=self.request.user)
+        else:
+            # Return empty queryset for anonymous users
+            return Subject.objects.none()
+        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         categories = Category.objects.filter(subject=self.object)
@@ -112,6 +173,7 @@ class QuizDetailView(DetailView):
 
 
 class QuizQuestionsView(View):
+    
     def get(self, request, quiz_pk):
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
         questions = quiz.questions.all()
@@ -130,7 +192,8 @@ class QuizQuestionsView(View):
         
         return render(request, 'home/quiz_questions.html', {
             'quiz': quiz,
-            'questions_data': questions_data  # Pass questions_data to the template
+            'questions_data': questions_data,  # Pass questions_data to the template
+         # Pass questions_data to the template
         })
 
     def post(self, request, quiz_pk):
@@ -163,6 +226,30 @@ class QuizQuestionsView(View):
             'score_percentage': round(score_percentage, 2),
             'total_possible_score': total_possible_score,
         })
+#Update Question
+class UpdateQuestionView(View):
+    def get(self, request, question_pk):
+        question = get_object_or_404(Question, pk=question_pk)  
+
+        form = QuestionForm(instance=question)
+
+        return render(request, 'home/update_question.html', {
+            'form': form,
+            'question': question
+        })  
+    
+    def post(self, request, question_pk):
+        question = get_object_or_404(Question, pk=question_pk)
+
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+            return redirect('quiz_questions', quiz_pk=question.quiz.pk)
+        
+        return render(request, 'home/update_question.html', {
+            'form': form,
+            'question': question
+        })
 
 
 
@@ -170,9 +257,27 @@ def create_subject(request):
     if request.method == "POST":
         form = SubjectForm(request.POST)
         if form.is_valid():
-            subject = form.save(commit=False)  #  Create but don't save yet
-            subject.user = request.user  #  Assign the logged-in user
-            subject.save()  
+            subject_name = form.cleaned_data['name']
+            print(f"Subject name from form: '{subject_name}'")
+
+            try:
+                # Try to get the existing subject (case-insensitive match)
+                subject = Subject.objects.get(name__iexact=subject_name)
+                created = False  # It already exists
+            except Subject.DoesNotExist:
+                # If subject doesn't exist, create a new one
+                subject = Subject(name=subject_name)
+                subject.save()
+                created = True  # Subject was created
+
+            # Add the current logged-in user to the subject's users field
+            subject.users.add(request.user)
+
+            # Debugging output
+            print(f"Created: {created}")
+            print(f"Subject: {subject.name if subject else 'No subject found'}")
+            print(f"User {request.user.email} added to subject '{subject.name}'")
+
             return redirect('create_category')
     else:
         form = SubjectForm()
@@ -183,13 +288,17 @@ def create_subject(request):
 
 
 
+
+
+
 def add_question(request):
     if request.method == 'POST':
-        question_form = QuestionForm(request.POST)
+        question_form = QuestionForm(request.POST, user=request.user)  # Pass logged-in user
         
         if question_form.is_valid():
             # Save the question first
             question = question_form.save()
+            
 
             # Get correct answers selected by the user
             correct_answers = question_form.cleaned_data['correct_answers']
@@ -205,7 +314,7 @@ def add_question(request):
             return render(request, 'home/add_question.html', {'question_form': question_form})
 
     else:
-        question_form = QuestionForm()
+        question_form = QuestionForm(user=request.user)
 
     return render(request, 'home/add_question.html', {'question_form': question_form})
 
@@ -214,23 +323,57 @@ def add_question(request):
 
 def create_category(request):
     if request.method == 'POST':
-        form = CategoryForm(request.POST)
+        form = CategoryForm(request.POST, user=request.user)  # Pass logged-in user
         if form.is_valid():
-            form.save()
+            category_name = form.cleaned_data['name']
+            print(f"Category name from form: '{category_name}'")
+
+            try:
+                # Try to get the existing category (case-insensitive match)
+                category = Category.objects.get(name__iexact=category_name)
+                created = False  # It already exists
+            except Category.DoesNotExist:
+                # If category doesn't exist, create a new one
+                category = form.save(commit=False)
+                category.subject = form.cleaned_data['subject']
+                category.name = category_name
+                category.save()
+                created = True  # Category was created
+            # Add the current logged-in user to the category's users field
+            category.users.add(request.user)
+            # Debugging output
+            print(f"Created: {created}")    
+
+            print(f"Category: {category.name if category else 'No category found'}")
+            print(f"User {request.user.email} added to category '{category.name}'")
+            # Save the category instance
+            # Redirect to a success page or another view
             return redirect('create_quiz')  # Redirect to a category listing page or success page
     else:
-        form = CategoryForm()
-    return render(request, 'home/create_category.html', {'form': form})
+        form = CategoryForm(user=request.user) # Pass user when rendering the form
 
+        
+    categories = Category.objects.filter(users=request.user)  # Get categories for the logged-in user
+    
+    return render(request, 'home/create_category.html', {'form': form, 'categories': categories})
+
+# Create a new quiz
 def create_quiz(request):
     if request.method == 'POST':
-        form = QuizForm(request.POST)
+        form = QuizForm(request.POST, user=request.user)  #  Pass 'user' to the form
         if form.is_valid():
-            form.save()
-            return redirect('add_question')  # Redirect to a quiz listing page or success page
+            quiz = form.save()  #  Save the quiz instance
+            quiz.users.add(request.user)  #  Link the quiz to the user
+            return redirect('add_question')  # Redirect after saving
     else:
-        form = QuizForm()
-    return render(request, 'home/create_quiz.html', {'form': form})
+        form = QuizForm(user=request.user)  #  Pass 'user' when rendering
+
+        
+    quizs = Quiz.objects.filter(users=request.user)  # Get quizzes for the logged-in user
+    print(f"user id is {request.user.id}")
+    
+    return render(request, 'home/create_quiz.html', {'form': form, 'quizs': quizs})
+
 
 
 
@@ -363,4 +506,91 @@ class CustomObtainAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
 
+  
+class SubjectUpdateView(UpdateView):
+    model = Subject
+    template_name = 'home/update-subject.html'
+    form_class = SubjectForm
+    success_url = reverse_lazy('subject-list')
     
+    
+class CategoryUpdateView(UpdateView):
+    model = Category
+    template_name = 'home/update-category.html'
+    form_class = CategoryForm
+    success_url = reverse_lazy('create_category') 
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Category.objects.filter(users=self.request.user)
+        else:
+            return Category.objects.none()
+        
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # Pass the logged-in user to the form
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+class QuizUpdateView(UpdateView):
+    model = Quiz
+    template_name = 'home/update-quiz.html'
+    form_class = QuizForm
+    success_url = reverse_lazy('create_quiz') 
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Quiz.objects.filter(users=self.request.user)
+        else:
+            return Quiz.objects.none()
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # Pass the logged-in user to the form
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+class QuizDeleteView(DeleteView):
+    model = Quiz
+    template_name = 'home/delete-quiz.html'
+    form_class = QuizForm
+    success_url = reverse_lazy('create_quiz') 
+
+def update_question(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    answers = list(question.answers.all().order_by('id'))  # Make sure to preserve order
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, instance=question , user=request.user)  # Pass logged-in user
+        if form.is_valid():
+            form.save()
+
+            correct_answers = form.cleaned_data['correct_answers'] 
+            
+            for i in range(4):
+                answer = answers[i]
+                answer.text = form.cleaned_data[f'answer{i+1}']
+                answer.is_correct = str(i+1) in correct_answers
+                answer.save()
+
+            return redirect('quiz-questions', quiz_pk=question.quiz.pk)
+    else:
+        initial_data = {
+            'answer1': answers[0].text if len(answers) > 0 else '',
+            'answer2': answers[1].text if len(answers) > 1 else '',
+            'answer3': answers[2].text if len(answers) > 2 else '',
+            'answer4': answers[3].text if len(answers) > 3 else '',
+            'correct_answers': [str(i+1) for i, a in enumerate(answers) if a.is_correct],
+        }
+        form = QuestionForm(instance=question, initial=initial_data , user=request.user)  # Pass logged-in user
+    return render(request, 'home/update_question.html', {'question_form': form, 'question': question})
+
+
+def delete_question(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    
+    if request.method == 'POST':
+        question.delete()
+        return redirect('quiz-questions', quiz_pk=question.quiz.id)
+    
+    return render(request, 'home/confirm_delete.html', {'question': question})

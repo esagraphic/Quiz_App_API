@@ -1,0 +1,14 @@
+{% block content %}
+  <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
+    <h1 class="text-red-600 font-bold text-3xl">Delete Question</h1>
+
+    <p>Are you sure you want to delete the question:</p>
+    <p class="font-bold">{{ question.text }}</p>
+
+    <form method="POST" action="{% url 'delete-question' question_id=question.id%}"> 
+      {% csrf_token %}
+      <button class="mt-4 w-full bg-red-600 text-white p-2 rounded hover:bg-red-700">Delete Question</button>
+    </form>
+    <a href="{% url 'quiz-questions' quiz_pk=question.quiz.id %}" class="mt-2 text-blue-600">Cancel</a>
+  </div>
+{% endblock %}

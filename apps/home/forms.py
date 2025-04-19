@@ -12,10 +12,26 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ['subject', 'name']
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Extract 'user' from kwargs
+        super().__init__(*args, **kwargs)  # Initialize the form
+
+        if user:
+            self.fields['subject'].queryset = Subject.objects.filter(users=user)  # Filter subjects
+
+
 class QuizForm(forms.ModelForm):
     class Meta:
         model = Quiz
         fields = ['category', 'name', 'is_private']
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Extract 'user' from kwargs
+        super().__init__(*args, **kwargs)  # Initialize the form
+
+        if user:
+            self.fields['category'].queryset = Category.objects.filter(users=user)  # ✅ Filter only user's categories
+
 
 class AnswerForm(forms.ModelForm):
     class Meta:
@@ -41,13 +57,18 @@ class QuestionForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['quiz'].queryset = Quiz.objects.all()
+        user = kwargs.pop('user', None)  # Extract user from kwargs
+        super().__init__(*args, **kwargs)  # Call the parent constructor
+        
+        # ✅ Correct filtering for ManyToManyField
+        if user:
+            self.fields['quiz'].queryset = Quiz.objects.filter(users__in=[user])
+        else:
+            self.fields['quiz'].queryset = Quiz.objects.none()  # Default to empty queryset
 
-        # Add Tailwind CSS classes to form fields
+        # ✅ Add Tailwind CSS classes to form fields
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.CheckboxSelectMultiple):
                 field.widget.attrs.update({'class': 'mt-2'})
             else:
                 field.widget.attrs.update({'class': 'w-full p-2 border rounded-md mt-1'})
-

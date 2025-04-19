@@ -1,14 +1,19 @@
 {% extends "layouts/base.html" %}
-
-{% block title %} Subjects {% endblock %} 
-
+{% block title %} Subjects {% endblock %}
 {% block content %}
 <div class="content">
+      <!-- Trigger Button for Subject Modal -->
+      <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#subjectModal">
+        Add New Subject
+      </button>
+    
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">Subjects and Question Counts</h4>
+                    
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -17,35 +22,55 @@
                                 <tr>
                                     <th>Subject</th>
                                     <th class="text-center">Total Questions</th>
+                                    {%if user.is_authenticated%}
+                                    <th class="text-end">Actions</th> <!-- Added column for the Update button -->
+                                    {%endif%}
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for subject, question_count in subject_question_data %}
                                 <tr>
+                                    <!-- Subject Name -->
                                     <td>
                                         <a href="{% url 'category-detail' subject.id %}">
                                             {{ subject.name }}
                                         </a>
                                     </td>
+
+                                    <!-- Total Questions -->
                                     <td class="text-center">{{ question_count }}</td>
+                                    
+                                    {%if user.is_authenticated%}
+                                    <!-- Update Button -->
+                                    <td class="text-end">
+                                        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#update-subject-modal-{{ subject.id }}">
+                                            Update
+                                        </a>                                        
+                                        <a href="{% url 'remove_subject' subject.id %}" class="btn btn-danger btn-sm" 
+                                           onclick="return confirm('Are you sure you want to remove this subject?');">
+                                            Delete
+                                        </a>
+                                    </td>
+
+                                    {% include 'home/partials/update-subject-modal.html' %}
+                                    {%endif%}
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="2" class="text-center">No subjects found.</td>
+                                    <td colspan="3" class="text-center">No subjects found.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <p>Do you want to create your own quiz? You can start from <a href="{% url 'create_subject' %}">here</a>.</p>
-                            </div>
-                        </div></div>
+                        <!-- End of Subjects Table -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    {% include 'home/partials/new-create-subject.html' %}
+    
+
 </div>
 
 {% endblock content %}
