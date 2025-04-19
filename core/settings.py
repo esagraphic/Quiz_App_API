@@ -87,7 +87,8 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 #bellow is defauld database with sqlite3
-if os.environ.get('DB_ENGINE') and os.environ.get('DB_ENGINE') == "postgres":
+if os.environ.get('DB_ENGINE') and os.environ.get('DB_ENGINE') == "postgresql":
+    # Postgresql database
     DATABASES = { 
       'default': {
         'ENGINE'  : 'django.db.backends.postgresql', 
