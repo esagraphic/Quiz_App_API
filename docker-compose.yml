@@ -3,6 +3,8 @@
 services:
   web:
     build: .
+    container_name: web_app
+    restart: always
     command: >
       sh -c "python manage.py migrate &&
              gunicorn --workers 4 --bind 0.0.0.0:8000 core.wsgi:application"
@@ -32,6 +34,7 @@ services:
   postgres:
     image: postgres:15
     container_name: postgres_db
+    hostname: postgres
     restart: always
     environment:
       POSTGRES_DB: p24_db
