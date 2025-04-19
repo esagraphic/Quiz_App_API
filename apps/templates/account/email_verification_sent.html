@@ -1,0 +1,30 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Email Verification Sent {% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div class="row pt-5">
+            <div class="col-md-6 mt-5 offset-md-3 pt-5 mt-5">
+                <div class="card">
+                    <div class="card-header text-center py-4">
+                        <h4 class="title">Verify Your Email</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="text-muted">
+                            We have sent a confirmation email to your email address. Please check your inbox and follow the instructions to verify your account.
+                        </p>
+                        <p class="text-muted">
+                            If you did not receive the email, please check your spam folder or <a href="{% url 'account_resend_confirmation' %}" class="text-primary">resend the email</a>.
+                        </p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{% url 'login' %}" class="btn btn-fill btn-primary">Go to Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -7,8 +7,7 @@ import os, environ
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, True)
-    
+    DEBUG=(bool, True) 
 )
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -39,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.home',  # Enable the inner home (home)
-    'rest_framework',
-    'rest_framework.authtoken',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'apps.authentication',
+    'apps.home',
 ]
 
 MIDDLEWARE = [
@@ -51,8 +52,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     "apps.home.middleware.LoginRequiredMiddleware",  # Add your custom middleware here
-
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -86,36 +87,25 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 #bellow is defauld database with sqlite3
-# if os.environ.get('DB_ENGINE') and os.environ.get('DB_ENGINE') == "mysql":
-#     DATABASES = { 
-#       'default': {
-#         'ENGINE'  : 'django.db.backends.mysql', 
-#         'NAME'    : os.getenv('DB_NAME'     , 'appseed_db'),
-#         'USER'    : os.getenv('DB_USERNAME' , 'appseed_db_usr'),
-#         'PASSWORD': os.getenv('DB_PASS'     , 'pass'),
-#         'HOST'    : os.getenv('DB_HOST'     , 'localhost'),
-#         'PORT'    : os.getenv('DB_PORT'     , 3306),
-#         }, 
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': 'db.sqlite3',
-#         }
-#     }
-
-#bellow is database with postgresql
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'quizappdb',
-        'USER': 'quizappuser',
-        'PASSWORD': 'password',
-        'HOST': 'localhost', # set in docker-compose.yml file for postgres container but if you wnna use local postgres then set 'localhost'
-        'PORT': '',
+if os.environ.get('DB_ENGINE') and os.environ.get('DB_ENGINE') == "postgres":
+    DATABASES = { 
+      'default': {
+        'ENGINE'  : 'django.db.backends.postgresql', 
+        'NAME'    : os.getenv('DB_NAME'     , 'p24_db'),
+        'USER'    : os.getenv('DB_USERNAME' , 'p24_db_usr'),
+        'PASSWORD': os.getenv('DB_PASS'     , 'p24_db_pwd'),
+        'HOST'    : os.getenv('DB_HOST'     , 'postgres'),
+        'PORT'    : os.getenv('DB_PORT'     , 5432),
+        }, 
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite3',
+        }
+    }
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -173,3 +163,25 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+# django-allauth settings
+ACCOUNT_LOGIN_METHODS = {"email", "username"}  # Allow login with email or username
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]  # Required fields during signup
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Enforce email verification
+ACCOUNT_EMAIL_REQUIRED = True  # Email is required
+ACCOUNT_USERNAME_REQUIRED = True  # Username is required
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/login/'  # Redirect after email confirmation for logged-in users
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/login/'  # Redirect after email confirmation for anonymous users
+ACCOUNT_LOGOUT_REDIRECT_URL = '/login/'  # Redirect after logout
+LOGIN_REDIRECT_URL = '/'  # Redirect after login
+LOGOUT_REDIRECT_URL = '/login/'  # Redirect after logout
+
+# Email backend configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.your-server.de'  # Replace with your SMTP server
+EMAIL_PORT = 587  # Typically 587 for TLS
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Your email address (set in .env file)
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Your email password (set in .env file)
+DEFAULT_FROM_EMAIL = 'QuizApp <noreply@chlosta.live>'  # Replace with your app's email
