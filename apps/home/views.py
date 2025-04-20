@@ -434,98 +434,79 @@ class CustomObtainAuthToken(ObtainAuthToken):
 def generate_quiz(request):
     context = {}
     question_form = QuestionForm()
-    
 
     if request.method == "POST":
         if "save_db" in request.POST:
             selected_quiz_id = request.POST.get("quiz")
-            print("Selected Quiz ID:", selected_quiz_id)
             my_data = request.session.get("parsed_output")
-            print("Parsed Output:", my_data)
-            script_path = os.path.join(
-                settings.BASE_DIR, "apps", "home", "utils", "insert_to_db.py"
-            )
 
-            # Convert my_data to JSON string before passing it to the script
-            my_data_json = json.dumps(my_data)
+            if not selected_quiz_id or not my_data:
+                return HttpResponse("❌ Quiz ID or parsed data is missing.")
 
-            # Pass the file path and data to the script
-            result = subprocess.run(
-                ["python", script_path, selected_quiz_id, my_data_json],
-                capture_output=True,
-                text=True,
-            )
-            print("Result:", result)
-            # return render(request, "home/generate_quiz.html", context)
+            quiz = get_object_or_404(Quiz, id=selected_quiz_id)
+
+            for data in my_data:
+                explanation_text = f"{data['explanation']}\n\nWhy Not Others?\n"
+                for key, reason in data["why_not"].items():
+                    explanation_text += f"- {key}: {reason or 'Not provided'}\n"
+
+                question = Question.objects.create(
+                    quiz=quiz,
+                    text=data["question"],
+                    explanation=explanation_text,
+                    example_code=data.get("example")
+                )
+
+                correct_key = data["correct_answer"].lower()
+                for key, answer_text in data["options"].items():
+                    Answer.objects.create(
+                        question=question,
+                        text=answer_text,
+                        is_correct=(key.lower() == correct_key)
+                    )
+
+            
+            return redirect("quiz-questions", quiz_pk=selected_quiz_id)
 
         elif "upload_excel" in request.POST:
-            # Handle Excel file upload
             try:
                 uploaded_file = request.FILES["quiz_file"]
                 if not uploaded_file.name.endswith(".xlsx"):
                     return HttpResponse("❌ Only .xlsx files are allowed.")
 
-                # Sanitize the file name
                 sanitized_filename = get_valid_filename(uploaded_file.name)
                 sanitized_filename = os.path.basename(sanitized_filename)
-
-                # Save to 'media/user_uploads/'
                 relative_path = os.path.join("user_uploads", sanitized_filename)
                 default_storage.save(relative_path, ContentFile(uploaded_file.read()))
 
-                # Pass upload success to template
                 context["upload_success"] = True
+                context["uploaded_path"] = os.path.join(settings.MEDIA_URL, relative_path)
 
-                context["uploaded_path"] = os.path.join(
-                    settings.MEDIA_URL, "user_uploads", sanitized_filename
-                )
+                file_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+                script_path = os.path.join(settings.BASE_DIR, "apps", "home", "utils", "read_from_excelfile.py")
 
-                file_path = os.path.join(
-                    settings.MEDIA_ROOT, "user_uploads", sanitized_filename
-                )
-
-                # Print the path to ensure it's correct
-                print("File path:", file_path)
-
-                # Absolute path to the script in utils folder
-                script_path = os.path.join(
-                    settings.BASE_DIR, "apps", "home", "utils", "read_from_excelfile.py"
-                )
-
-                # Pass the file path to the script
-                result = subprocess.run(
-                    ["python", script_path, file_path], capture_output=True, text=True
-                )
-                # Check if the script ran successfully
+                result = subprocess.run(["python", script_path, file_path], capture_output=True, text=True)
                 if result.returncode != 0:
                     return HttpResponse(f"❌ Error running script: {result.stderr}")
-                # Print the output from the script
+
                 try:
                     parsed_output = json.loads(result.stdout)
                 except json.JSONDecodeError as e:
-                    return HttpResponse(
-                        f"❌ Failed to parse script output as JSON: {str(e)}"
-                    )
+                    return HttpResponse(f"❌ Failed to parse script output as JSON: {str(e)}")
 
                 context["script_output"] = parsed_output
-                # Save the parsed output to the session so it can be used later in the view
                 request.session["parsed_output"] = parsed_output
+
             except Exception as e:
                 return HttpResponse(f"❌ Upload Error: {e}")
 
         elif "generate_excel" in request.POST:
-            # Generate Excel template
             try:
                 num_questions = int(request.POST["num_questions"])
-                user_id = request.user.id  # Assumes user is logged in
+                user_id = request.user.id
                 filename = generate_excel_file(user_id, num_questions)
-
-                # Prepare the file URL for download
                 file_path = os.path.join(settings.MEDIA_ROOT, "exports", filename)
-
-                # Pass the filename to the context
                 context["filename"] = filename
-
             except Exception as e:
                 return HttpResponse(f"❌ Error: {e}")
 
