@@ -280,7 +280,17 @@ def create_subject(request):
             print(f"Subject: {subject.name if subject else 'No subject found'}")
             print(f"User {request.user.email} added to subject '{subject.name}'")
 
-            return redirect('create_category')
+            context = {
+                'subject': subject,
+                'question_count': Question.objects.filter(quiz__category__subject=subject).count(),
+                'user': request.user,
+                
+            }
+            
+            response = render(request, 'home/partials/subject-rows.html', context)
+            response['HX-Trigger'] = 'success'  # Trigger HTMX event
+            return response
+
     else:
         form = SubjectForm()
 
@@ -350,7 +360,10 @@ def create_category(request):
             print(f"User {request.user.email} added to category '{category.name}'")
             # Save the category instance
             # Redirect to a success page or another view
-            return redirect('create_quiz')  # Redirect to a category listing page or success page
+            response = render(request, 'home/partials/category-rows.html', {'category': category})
+            response['HX-Trigger'] = 'success'  # Trigger HTMX event
+            return response
+            
     else:
         form = CategoryForm(user=request.user) # Pass user when rendering the form
 
@@ -366,7 +379,11 @@ def create_quiz(request):
         if form.is_valid():
             quiz = form.save()  #  Save the quiz instance
             quiz.users.add(request.user)  #  Link the quiz to the user
-            return redirect('add_question')  # Redirect after saving
+            # return redirect('add_question')  # Redirect after saving
+            response = render(request, 'home/partials/quiz-rows.html', {'quiz': quiz})
+            response['HX-Trigger'] = 'success'  # Trigger HTMX event
+            return response
+
     else:
         form = QuizForm(user=request.user)  #  Pass 'user' when rendering
 
@@ -538,9 +555,22 @@ class SubjectUpdateView(UpdateView):
     
 class CategoryUpdateView(UpdateView):
     model = Category
-    template_name = 'home/update-category.html'
+    template_name = 'home/partials/category-update-modal.html'
     form_class = CategoryForm
-    success_url = reverse_lazy('create_category') 
+    # success_url = reverse_lazy('create_category') 
+
+    def form_valid(self, form):
+       
+        # Save the category
+        category = form.save()
+
+        # Render the updated category row for HTMX
+        context = {
+            'category': category,
+        }
+        response = render(self.request, 'home/partials/category-rows.html', context)
+        response['HX-Trigger'] = 'categoryUpdated'
+        return response
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -556,9 +586,20 @@ class CategoryUpdateView(UpdateView):
     
 class QuizUpdateView(UpdateView):
     model = Quiz
-    template_name = 'home/update-quiz.html'
+    template_name = 'home/partials/update-quiz-modal.html'
     form_class = QuizForm
-    success_url = reverse_lazy('create_quiz') 
+    
+    def form_valid(self, form):
+        # Save the quiz
+        quiz = form.save()
+
+        # Render the updated quiz row for HTMX
+        context = {
+            'quiz': quiz,
+        }
+        response = render(self.request, 'home/partials/quiz-rows.html', context)
+        response['HX-Trigger'] = 'quizUpdated'
+        return response
 
     def get_queryset(self):
         if self.request.user.is_authenticated:

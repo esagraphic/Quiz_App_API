@@ -1,0 +1,48 @@
+<!-- Unique Update Modal for each subject -->
+<div class="modal fade" id="update-category-modal-{{ category.id }}" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form 
+    hx-post="{% url 'update_category' category.id %}"
+    hx-target="#category-row-{{ category.id }}" 
+    hx-swap="outerHTML" 
+    
+    method="post"
+>
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5 class="modal-title">Update</h5>
+        <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Subject Name</label>
+            {{ form.subject }}
+        </div>
+        <div class="form-group">
+            <label>Category Name</label>
+            {{ form.name }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+        </div>
+    </div>
+</div>
+
+<!-- 🧠 Add this to show the modal after it loads -->
+<script>
+    $('#update-category-modal-{{ category.id }}').modal('show');
+  </script>
+
+<script>
+    document.body.addEventListener('categoryUpdated', function () {
+      $('.modal.show').modal('hide');
+    });
+  </script>

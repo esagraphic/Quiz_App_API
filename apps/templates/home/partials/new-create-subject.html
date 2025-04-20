@@ -10,8 +10,10 @@
     </div>
 
     <div class="modal-body">
-        <form method="POST" action="{% url 'create_subject' %}">
-
+        <form method="POST" hx-post="{% url 'create_subject' %}" 
+        hx-target="#subject-table-body" 
+        hx-on:success="this.reset(); $('#subjectModal').modal('hide');"
+        hx-swap="afterbegin" >
         {% csrf_token %}
         <div class="form-group">
           <label>Subject Name</label>
@@ -27,3 +29,4 @@
   </div>
 </div>
      
+

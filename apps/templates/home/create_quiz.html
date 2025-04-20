@@ -34,18 +34,9 @@
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="quiz-table-body">
                   {% for quiz in quizs %}
-                    <tr>
-                      <td>{{ quiz.id }}</td>
-                      <td>{{ quiz.name }}</td>
-                      <td>{{ quiz.category.name }}</td> <!-- Assuming quiz.category is a related object -->
-                      <td>
-                        <!-- Update Button -->
-                        <a href="{% url 'update_quiz' quiz.id %}" class="btn btn-warning btn-sm">Update</a>
-                        
-                      </td>
-                    </tr>
+                  {% include 'home/partials/quiz-rows.html' %}
                   {% empty %}
                     <tr>
                       <td colspan="4" class="text-center">No quizzes found.</td>

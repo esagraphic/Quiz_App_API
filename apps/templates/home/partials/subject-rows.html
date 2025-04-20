@@ -13,15 +13,20 @@
     {%if user.is_authenticated%}
     <!-- Update Button -->
     <td class="text-end">
-        <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#update-subject-modal-{{ subject.id }}">
-            Update
-        </a>                                        
+        
+        <button 
+        class="btn btn-warning btn-sm"
+        hx-get="{% url 'update_subject' subject.id %}" 
+        hx-target="body" 
+        hx-swap="beforeend"
+    >
+        Update
+    </button>                                         
         <a href="{% url 'remove_subject' subject.id %}" class="btn btn-danger btn-sm" 
            onclick="return confirm('Are you sure you want to remove this subject?');">
             Delete
         </a>
     </td>
 
-    {% include 'home/partials/update-subject-modal.html' %}
     {%endif%}
 </tr>
