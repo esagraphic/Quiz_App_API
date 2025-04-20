@@ -14,7 +14,9 @@ from .views import (
     update_question,
     delete_question,
     remove_user_from_subject,
-    confirm_remove_subject
+    confirm_remove_subject,
+    generate_quiz,
+    download_quiz_file,
 )
 
 urlpatterns = [
@@ -53,6 +55,9 @@ urlpatterns = [
     # Remove the current logged-in user from the ManyToManyField
     path('subjects/remove/<int:subject_id>/', remove_user_from_subject, name='remove_subject'),
     path('subject/<int:subject_id>/confirm-remove/',confirm_remove_subject, name='confirm_remove_subject'),
+    #excel file 
+     path('generate_quiz/', generate_quiz, name='generate_quiz'),
+     path('download_quiz_file/', download_quiz_file, name='download_quiz_file'),
 
     # Matches any HTML file
     re_path(r"^.*\.*", views.pages, name="pages"),

@@ -1,0 +1,134 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Create Quiz{% endblock %}
+
+{% block content %}
+<div class="content">
+  <div class="row mt-4 justify-content-center">
+
+    <!-- Generate Quiz Excel Template Card -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header text-center">
+          <h4 class="card-title">📄 Generate Quiz Excel Template</h4>
+        </div>
+        <div class="card-body text-center">
+          <button type="button" class="btn btn-info btn-fill" data-toggle="modal" data-target="#generateExcelModal">
+            Generate Quiz Excel Template
+          </button>
+        </div>
+        <!-- Include the Modal -->
+        {% include 'home/partials/generate_excel_modal.html' %}
+      </div>
+    </div>
+    {% if filename %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header text-center">
+          <h4 class="card-title">📥 Download Quiz File</h4>
+        </div>
+        <div class="card-body text-center">
+          
+            <form method="GET" action="{% url 'download_quiz_file' %}">
+              <input type="hidden" name="filename" value="{{ filename }}">
+              <button type="submit" class="btn btn-success btn-fill">Download your file</button>
+            </form>
+          
+         
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <!-- Upload Quiz Excel File Card -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header text-center">
+          <h4 class="card-title">📤 Upload Quiz Excel File</h4>
+        </div>
+        <div class="card-body text-center">
+          <button type="button" class="btn btn-info btn-fill" data-toggle="modal" data-target="#uploadExcelModal">
+            Upload Quiz Excel File
+          </button>
+        </div>
+        <!-- Include the Modal -->
+        {% include 'home/partials/upload_excel_modal.html' %}
+      </div>
+    </div>
+
+    <!-- Add Download File Card -->
+
+
+  </div> <!-- End of Row -->
+
+  {% if upload_success %}
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h5>✅ File uploaded successfully!</h5>
+          <p>Saved at: <code>{{ uploaded_path }}</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if script_output %}
+  
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">🧠 Your Imported Questions From Excel File</h4>
+          <form method="POST">
+            {% csrf_token %}
+          <label class="block mb-2">Select Quiz:</label>
+          <div style="width: 33%; display: inline-block;">
+            {{ question_form.quiz }} <!-- This will render the 'quiz' dropdown field -->
+          </div>
+          <label class="d-block mt-3">Please review your questions. If all is good, select your quiz from the dropdown and save to the database.</label>
+          
+          <button type="submit" name="save_db" class="btn btn-success btn-fill mt-2">Save to Database</button>
+          </form>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            {% for question in script_output %}
+            <li class="list-group-item mb-4">
+              <h5><strong>Question {{ forloop.counter }}:</strong> {{ question.question }}</h5>
+              <p><strong>Options:</strong></p>
+              <ul>
+                {% for key, value in question.options.items %}
+                <li><strong>{{ key }}:</strong> {{ value }}</li>
+                {% endfor %}
+              </ul>
+
+              <p><strong>Correct Answer:</strong> {{ question.correct_answer }}</p>
+
+              <p><strong>Explanation:</strong> {{ question.explanation }}</p>
+
+              <p><strong>Example:</strong></p>
+              <pre>{{ question.example }}</pre>
+
+              <p><strong>Why Not (for other options):</strong></p>
+              <ul>
+                {% for key, reason in question.why_not.items %}
+                <li><strong>{{ key }}:</strong> {{ reason }}</li>
+                {% endfor %}
+              </ul>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="row mt-4">
+    <div class="col-md-12 text-center">
+      <p></p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}
