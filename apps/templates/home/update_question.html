@@ -1,7 +1,11 @@
 {% extends "layouts/base.html" %}
-
 {% block title %} Add Question {% endblock %}
-
+{% block stylesheets %}
+    <!-- Load Tailwind CSS from Vite (This ensures Tailwind is only loaded here) -->
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+   
+{% endblock %}
 {% block content %}
   <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
       <h1 class="text-xl font-bold mb-4">Add Question</h1>

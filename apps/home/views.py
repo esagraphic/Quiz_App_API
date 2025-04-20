@@ -108,24 +108,10 @@ def remove_user_from_subject(request, subject_id):
 
     return redirect('subject-list')  # Redirect to the subject list page or another appropriate page
 
-# Remove user from subject , category and quiz
-def remove_user_from_subject(request, subject_id):
+
+def confirm_remove_subject(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
-
-    # Remove the user from the subject
-    subject.users.remove(request.user)
-
-    # Remove the user from all related categories
-    categories = Category.objects.filter(subject=subject)
-    for category in categories:
-        category.users.remove(request.user)
-
-        # Remove the user from all related quizzes
-        quizzes = Quiz.objects.filter(category=category)
-        for quiz in quizzes:
-            quiz.users.remove(request.user)
-
-    return redirect('subject-list')  # Redirect to the subject list page or another appropriate page
+    return render(request, 'home/partials/remove_subject_modal.html', {'subject': subject})
 
 
 class CategoryDetailView(DetailView):
@@ -310,7 +296,6 @@ def add_question(request):
         if question_form.is_valid():
             # Save the question first
             question = question_form.save()
-            
 
             # Get correct answers selected by the user
             correct_answers = question_form.cleaned_data['correct_answers']
@@ -320,7 +305,13 @@ def add_question(request):
                 answer = Answer(question=question, text=answer_text, is_correct=is_correct)
                 answer.save()
 
-            return redirect('subject-list')  # Redirect to the question list page or success page
+            # Check the action and redirect accordingly
+            action = request.POST.get('action')
+            if action == 'save_finish':
+                return redirect('subject-list')  # Redirect to the subject list page
+            elif action == 'save_new':
+                return redirect('add_question')  # Reload the add question page for a new entry
+
         else:
             # If the form is invalid, re-render the form with error messages
             return render(request, 'home/add_question.html', {'question_form': question_form})
@@ -656,4 +647,4 @@ def delete_question(request, question_id):
         question.delete()
         return redirect('quiz-questions', quiz_pk=question.quiz.id)
     
-    return render(request, 'home/confirm_delete.html', {'question': question})
+    return render(request, 'home/partials/confirm_delete_modal.html', {'question': question})
