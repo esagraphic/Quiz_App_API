@@ -561,18 +561,39 @@ class SubjectUpdateView(UpdateView):
     template_name = 'home/partials/update-subject-modal.html'
 
     def form_valid(self, form):
-        # Save the subject
-        subject = form.save()
+        subject = self.get_object()
+        current_user = self.request.user
 
-        # Render the updated subject row for HTMX
+        # Check if other users are using this subject
+        other_users = subject.users.exclude(id=current_user.id)
+
+        if other_users.exists():
+            # Detach current user from the shared subject
+            subject.users.remove(current_user)
+
+            # Create a new subject with updated values
+            new_subject = form.save(commit=False)
+            new_subject.pk = None  # So it will create a new object
+            new_subject.save()
+            new_subject.users.add(current_user)
+            subject = new_subject  # Use the new subject for rendering
+        else:
+            # Safe to update the subject since it's only used by this user
+            subject = form.save()
+
+        # Count related questions
+        question_count = Question.objects.filter(quiz__category__subject=subject).count()
+
         context = {
             'subject': subject,
-            'question_count': Question.objects.filter(quiz__category__subject=subject).count()
+            'question_count': question_count
         }
-        html= render(self.request, 'home/partials/subject-rows.html', context)
+
+        html = render(self.request, 'home/partials/subject-rows.html', context).content
         response = HttpResponse(html)
-        response['HX-Trigger'] = 'subjectUpdated'  # Trigger HTMX event
+        response['HX-Trigger'] = 'subjectUpdated'
         return response
+
     
 
        
@@ -586,17 +607,30 @@ class CategoryUpdateView(UpdateView):
     model = Category
     template_name = 'home/partials/category-update-modal.html'
     form_class = CategoryForm
-    # success_url = reverse_lazy('create_category') 
 
     def form_valid(self, form):
-       
-        # Save the category
-        category = form.save()
+        category = self.get_object()
+        current_user = self.request.user
 
-        # Render the updated category row for HTMX
-        context = {
-            'category': category,
-        }
+        # Check if other users are using this category
+        other_users = category.users.exclude(id=current_user.id)
+
+        if other_users.exists():
+            # Detach current user from the shared category
+            category.users.remove(current_user)
+
+            # Create a new category with the updated values
+            new_category = form.save(commit=False)
+            new_category.pk = None  # Forces creation of new object
+            new_category.save()
+            new_category.users.add(current_user)
+            category = new_category  # For rendering
+        else:
+            # Safe to update directly
+            category = form.save()
+
+        # Render updated row
+        context = {'category': category}
         response = render(self.request, 'home/partials/category-rows.html', context)
         response['HX-Trigger'] = 'categoryUpdated'
         return response
@@ -604,28 +638,41 @@ class CategoryUpdateView(UpdateView):
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return Category.objects.filter(users=self.request.user)
-        else:
-            return Category.objects.none()
-        
+        return Category.objects.none()
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        # Pass the logged-in user to the form
         kwargs['user'] = self.request.user
         return kwargs
+
     
 class QuizUpdateView(UpdateView):
     model = Quiz
     template_name = 'home/partials/update-quiz-modal.html'
     form_class = QuizForm
-    
-    def form_valid(self, form):
-        # Save the quiz
-        quiz = form.save()
 
-        # Render the updated quiz row for HTMX
-        context = {
-            'quiz': quiz,
-        }
+    def form_valid(self, form):
+        quiz = self.get_object()
+        current_user = self.request.user
+
+        # Check if other users are using this quiz
+        other_users = quiz.users.exclude(id=current_user.id)
+
+        if other_users.exists():
+            # Detach current user from the shared quiz
+            quiz.users.remove(current_user)
+
+            # Create a new quiz with the updated values
+            new_quiz = form.save(commit=False)
+            new_quiz.pk = None  # Force creation of a new object
+            new_quiz.save()
+            new_quiz.users.add(current_user)
+            quiz = new_quiz  # Use new quiz for rendering
+        else:
+            # Safe to update directly
+            quiz = form.save()
+
+        context = {'quiz': quiz}
         response = render(self.request, 'home/partials/quiz-rows.html', context)
         response['HX-Trigger'] = 'quizUpdated'
         return response
@@ -633,14 +680,13 @@ class QuizUpdateView(UpdateView):
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return Quiz.objects.filter(users=self.request.user)
-        else:
-            return Quiz.objects.none()
-    
+        return Quiz.objects.none()
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        # Pass the logged-in user to the form
         kwargs['user'] = self.request.user
         return kwargs
+
     
 class QuizDeleteView(DeleteView):
     model = Quiz
@@ -686,3 +732,112 @@ def delete_question(request, question_id):
         return redirect('quiz-questions', quiz_pk=question.quiz.id)
     
     return render(request, 'home/partials/confirm_delete_modal.html', {'question': question})
+
+
+def generate_quiz(request):
+    context = {}
+    question_form = QuestionForm(request.POST, user=request.user)
+
+    if request.method == "POST":
+        if "save_db" in request.POST:
+            selected_quiz_id = request.POST.get("quiz")
+            my_data = request.session.get("parsed_output")
+
+            if not selected_quiz_id or not my_data:
+                return HttpResponse("❌ Quiz ID or parsed data is missing.")
+
+            quiz = get_object_or_404(Quiz, id=selected_quiz_id)
+
+            for data in my_data:
+                explanation_text = f"{data['explanation']}\n\nWhy Not Others?\n"
+                for key, reason in data["why_not"].items():
+                    explanation_text += f"- {key}: {reason or 'Not provided'}\n"
+
+                question = Question.objects.create(
+                    quiz=quiz,
+                    text=data["question"],
+                    explanation=explanation_text,
+                    example_code=data.get("example")
+                )
+
+                correct_key = data["correct_answer"].lower()
+                for key, answer_text in data["options"].items():
+                    Answer.objects.create(
+                        question=question,
+                        text=answer_text,
+                        is_correct=(key.lower() == correct_key)
+                    )
+
+            
+            return redirect("quiz-questions", quiz_pk=selected_quiz_id)
+
+        elif "upload_excel" in request.POST:
+            try:
+                uploaded_file = request.FILES["quiz_file"]
+                if not uploaded_file.name.endswith(".xlsx"):
+                    return HttpResponse("❌ Only .xlsx files are allowed.")
+
+                sanitized_filename = get_valid_filename(uploaded_file.name)
+                sanitized_filename = os.path.basename(sanitized_filename)
+                relative_path = os.path.join("user_uploads", sanitized_filename)
+                default_storage.save(relative_path, ContentFile(uploaded_file.read()))
+
+                context["upload_success"] = True
+                context["uploaded_path"] = os.path.join(settings.MEDIA_URL, relative_path)
+
+                file_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+                script_path = os.path.join(settings.BASE_DIR, "apps", "home", "utils", "read_from_excelfile.py")
+
+                result = subprocess.run(["python", script_path, file_path], capture_output=True, text=True)
+                if result.returncode != 0:
+                    return HttpResponse(f"❌ Error running script: {result.stderr}")
+
+                try:
+                    parsed_output = json.loads(result.stdout)
+                except json.JSONDecodeError as e:
+                    return HttpResponse(f"❌ Failed to parse script output as JSON: {str(e)}")
+
+                context["script_output"] = parsed_output
+                request.session["parsed_output"] = parsed_output
+
+            except Exception as e:
+                return HttpResponse(f"❌ Upload Error: {e}")
+
+        elif "generate_excel" in request.POST:
+            try:
+                num_questions = int(request.POST["num_questions"])
+                user_id = request.user.id
+                filename = generate_excel_file(user_id, num_questions)
+                file_path = os.path.join(settings.MEDIA_ROOT, "exports", filename)
+                context["filename"] = filename
+            except Exception as e:
+                return HttpResponse(f"❌ Error: {e}")
+
+    context["question_form"] = question_form
+    return render(request, "home/generate_quiz.html", context)
+
+
+def download_quiz_file(request):
+    # Get the filename from the GET request
+    filename = request.GET.get("filename")
+
+    # Construct the full path to the file
+    file_path = os.path.join(settings.MEDIA_ROOT, "exports", filename)
+
+    # Ensure the file exists
+    if os.path.exists(file_path):
+        # Open the file and serve it as a download response
+        with open(file_path, "rb") as file:
+            response = HttpResponse(
+                file.read(),
+                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+            response["Content-Disposition"] = f'attachment; filename="{filename}"'
+            return response
+    else:
+        return HttpResponse("❌ File not found.")
+
+
+
+def insert_question_method(request):
+    return render(request, "home/insert_question_method.html")

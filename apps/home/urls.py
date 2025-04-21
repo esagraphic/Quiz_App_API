@@ -17,6 +17,7 @@ from .views import (
     confirm_remove_subject,
     generate_quiz,
     download_quiz_file,
+    insert_question_method,
 )
 
 urlpatterns = [
@@ -56,8 +57,10 @@ urlpatterns = [
     path('subjects/remove/<int:subject_id>/', remove_user_from_subject, name='remove_subject'),
     path('subject/<int:subject_id>/confirm-remove/',confirm_remove_subject, name='confirm_remove_subject'),
     #excel file 
-     path('generate_quiz/', generate_quiz, name='generate_quiz'),
-     path('download_quiz_file/', download_quiz_file, name='download_quiz_file'),
+    path('generate_quiz/', generate_quiz, name='generate_quiz'),
+    path('download_quiz_file/', download_quiz_file, name='download_quiz_file'),
+    path("insert-question-method/", insert_question_method, name="insert_question_method"),
+
 
     # Matches any HTML file
     re_path(r"^.*\.*", views.pages, name="pages"),
