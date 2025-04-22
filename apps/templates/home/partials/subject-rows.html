@@ -1,0 +1,27 @@
+<!-- Subject Row -->
+<tr id="subject-row-{{ subject.id }}">
+
+    <td>
+        <a href="{% url 'category-detail' subject.id %}">
+            {{ subject.name }}
+        </a>
+    </td>
+
+    <td class="text-center">{{ question_count }}</td>
+
+    {% if user.is_authenticated %}
+    <td class="text-end">
+        <!-- Update Button -->
+        <button class="btn btn-warning btn-sm" hx-get="{% url 'update_subject' subject.id %}" hx-target="body"
+            hx-swap="beforeend">
+            Update
+        </button>
+
+        <!-- Delete Button that opens the modal -->
+        <button class="btn btn-danger btn-sm" hx-get="{% url 'confirm_remove_subject' subject.id %}" hx-target="body"
+            hx-swap="beforeend">
+            Delete
+        </button>
+    </td>
+    {% endif %}
+</tr>

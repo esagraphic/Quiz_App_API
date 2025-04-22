@@ -1,0 +1,49 @@
+<!-- Upload Excel File Modal -->
+<div class="modal fade" id="uploadExcelModal" tabindex="-1" role="dialog" aria-labelledby="uploadExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="uploadExcelModalLabel">📤 Upload Quiz Excel File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="quiz_file">Choose Excel File (.xlsx)</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fa fa-paperclip"></i></span>
+                </div>
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="quiz_file" name="quiz_file" accept=".xlsx" required onchange="updateFileName()">
+                  <label class="custom-file-label" for="quiz_file" id="file_label">Choose file</label>
+                </div>
+              </div>
+            </div>
+            <button type="submit" name="upload_excel" class="btn btn-info btn-fill">Upload Excel</button>
+          </form>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function updateFileName() {
+      const fileInput = document.getElementById('quiz_file');
+      const fileLabel = document.getElementById('file_label');
+      if (fileInput.files.length > 0) {
+        fileLabel.textContent = fileInput.files[0].name;
+      } else {
+        fileLabel.textContent = 'Choose file';
+      }
+    }
+  </script>
+  

@@ -13,7 +13,10 @@
           </div>
           
           <div class="modal-body">
-            <form method="POST">
+            <form method="POST" id="category-form" hx-post="{% url 'create_quiz' %}" 
+              hx-target="#quiz-table-body" 
+              hx-on:success="this.reset(); $('#createQuizModal').modal('hide');"
+              hx-swap="afterbegin">
               {% csrf_token %}
               <div class="form-group">
                 <label>Category</label>
@@ -39,4 +42,6 @@
     </div>
     </div>
     </div>
+    
+
     

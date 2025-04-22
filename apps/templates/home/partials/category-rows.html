@@ -1,0 +1,20 @@
+<tr id="category-row-{{ category.id }}">
+    
+    <td>{{ category.name }}</td>
+    <td>{{ category.subject }}</td>
+    <!-- Align Update Button Normally -->
+    <td>
+        <button 
+        class="btn btn-warning btn-sm"
+        hx-get="{% url 'update_category' category.id %}" 
+        hx-target="body" 
+        hx-swap="beforeend"
+    >
+        Update
+    </button> 
+       
+
+    </td>
+  </tr>
+
+  

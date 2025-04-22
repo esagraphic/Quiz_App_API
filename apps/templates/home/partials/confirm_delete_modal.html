@@ -1,0 +1,35 @@
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="delete-question-modal-{{ question.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+  
+        <form method="POST" action="{% url 'delete-question' question_id=question.id %}">
+          {% csrf_token %}
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="deleteModalLabel">Delete Question</h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+  
+          <div class="modal-body">
+            <p>Are you sure you want to delete the following question?</p>
+            <p class="font-weight-bold text-danger">"{{ question.text }}"</p>
+          </div>
+  
+          <div class="modal-footer">
+            <a href="{% url 'quiz-questions' quiz_pk=question.quiz.id %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+  
+      </div>
+    </div>
+  </div>
+  
+  <!-- Auto-show the modal on page load -->
+  <script>
+    $('#delete-question-modal-{{ question.id }}').modal('show');
+  </script>
+  
+  

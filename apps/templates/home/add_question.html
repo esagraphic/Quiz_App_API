@@ -1,10 +1,16 @@
 {% extends "layouts/base.html" %}
-
 {% block title %} Add Question {% endblock %}
-
+{% block stylesheets %}
+    <!-- Load Tailwind CSS from Vite (This ensures Tailwind is only loaded here) -->
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+   
+{% endblock %}
 {% block content %}
   <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-20">
-      <h1 class="text-xl font-bold mb-4">Add Question</h1>
+   
+    
+      <h1 class="text-red-600 font-bold text-3xl">Add Question</h1>
       
       <form method="POST">
           {% csrf_token %}
@@ -55,7 +61,23 @@
               </div>
           </div>
           
-          <button class="mt-4 w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Save Question</button>
+          <div class="mt-4 flex justify-between">
+              <button type="submit" name="action" value="save_finish" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                  Save and Finish
+              </button>
+              <button type="submit" name="action" value="save_new" class="bg-green-500 text-white p-2 rounded hover:bg-green-600">
+                  Save and New
+              </button>
+          </div>
       </form>
+
+      
+
+
+
+      
   </div>
+
+ 
+
 {% endblock %}

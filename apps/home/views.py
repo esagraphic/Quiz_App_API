@@ -3,7 +3,11 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import json
+import os
+import subprocess
 from django import template
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -23,12 +27,19 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .permissions import AllowCreateUser   # Import custom permission
 from django.utils import timezone
+from django.template.loader import render_to_string
+from .utils.generate_excelfile import generate_excel_file
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.utils.text import get_valid_filename
+from django.http import FileResponse
+
 
 @login_required(login_url="/login/")
 def index(request):
-    context = {'segment': 'index'}
+    context = {"segment": "index"}
 
-    html_template = loader.get_template('home/index.html')
+    html_template = loader.get_template("home/index.html")
     return HttpResponse(html_template.render(context, request))
 
 
@@ -39,29 +50,29 @@ def pages(request):
     # Pick out the html file name from the url. And load that template.
     try:
 
-        load_template = request.path.split('/')[-1]
+        load_template = request.path.split("/")[-1]
 
-        if load_template == 'admin':
-            return HttpResponseRedirect(reverse('admin:index'))
-        context['segment'] = load_template
+        if load_template == "admin":
+            return HttpResponseRedirect(reverse("admin:index"))
+        context["segment"] = load_template
 
-        html_template = loader.get_template('home/' + load_template)
+        html_template = loader.get_template("home/" + load_template)
         return HttpResponse(html_template.render(context, request))
 
     except template.TemplateDoesNotExist:
 
-        html_template = loader.get_template('home/page-404.html')
+        html_template = loader.get_template("home/page-404.html")
         return HttpResponse(html_template.render(context, request))
 
     except:
-        html_template = loader.get_template('home/page-500.html')
+        html_template = loader.get_template("home/page-500.html")
         return HttpResponse(html_template.render(context, request))
 
 
 class SubjectListView(ListView):
     model = Subject
-    template_name = 'home/subject_list.html'
-    context_object_name = 'subjects'
+    template_name = "home/subject_list.html"
+    context_object_name = "subjects"
 
     def get_queryset(self):
         # Ensure the user is authenticated
@@ -106,24 +117,10 @@ def remove_user_from_subject(request, subject_id):
 
     return redirect('subject-list')  # Redirect to the subject list page or another appropriate page
 
-# Remove user from subject , category and quiz
-def remove_user_from_subject(request, subject_id):
+
+def confirm_remove_subject(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
-
-    # Remove the user from the subject
-    subject.users.remove(request.user)
-
-    # Remove the user from all related categories
-    categories = Category.objects.filter(subject=subject)
-    for category in categories:
-        category.users.remove(request.user)
-
-        # Remove the user from all related quizzes
-        quizzes = Quiz.objects.filter(category=category)
-        for quiz in quizzes:
-            quiz.users.remove(request.user)
-
-    return redirect('subject-list')  # Redirect to the subject list page or another appropriate page
+    return render(request, 'home/partials/remove_subject_modal.html', {'subject': subject})
 
 
 class CategoryDetailView(DetailView):
@@ -149,26 +146,29 @@ class CategoryDetailView(DetailView):
             question_count = Question.objects.filter(quiz__category=category).count()
             category_question_data.append((category, question_count))
 
-        context['category_question_data'] = category_question_data
+        context["category_question_data"] = category_question_data
         return context
-    
 
 
 class QuizDetailView(DetailView):
     model = Category
-    template_name = 'home/quiz_detail.html'  # The template you will create
-    context_object_name = 'category'
+    template_name = "home/quiz_detail.html"  # The template you will create
+    context_object_name = "category"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        quizzes = Quiz.objects.filter(category=self.object)  # Get quizzes related to the selected category
+        quizzes = Quiz.objects.filter(
+            category=self.object
+        )  # Get quizzes related to the selected category
         quiz_question_count = []
 
         for quiz in quizzes:
-            question_count = quiz.questions.count()  # Get the number of questions for each quiz
+            question_count = (
+                quiz.questions.count()
+            )  # Get the number of questions for each quiz
             quiz_question_count.append((quiz, question_count))
 
-        context['quiz_question_count'] = quiz_question_count
+        context["quiz_question_count"] = quiz_question_count
         return context
 
 
@@ -177,16 +177,18 @@ class QuizQuestionsView(View):
     def get(self, request, quiz_pk):
         quiz = get_object_or_404(Quiz, pk=quiz_pk)
         questions = quiz.questions.all()
-        
+
         questions_data = []
         for question in questions:
-            answers = question.answers.all()  # This is correct; it gives a queryset of answers
+            answers = (
+                question.answers.all()
+            )  # This is correct; it gives a queryset of answers
             question_data = {
-                'id': question.id,
-                'question_text': question.text,
-                'answers': answers,  # Pass the queryset directly
-                'explanation': question.explanation,  # Include explanation
-                'example_code': question.example_code,  # Include example code
+                "id": question.id,
+                "question_text": question.text,
+                "answers": answers,  # Pass the queryset directly
+                "explanation": question.explanation,  # Include explanation
+                "example_code": question.example_code,  # Include example code
             }
             questions_data.append(question_data)
         
@@ -204,15 +206,23 @@ class QuizQuestionsView(View):
         results = []
 
         for question in questions:
-            selected_answers = request.POST.getlist(f'question_{question.id}')
+            selected_answers = request.POST.getlist(f"question_{question.id}")
             correct_answers = question.answers.filter(is_correct=True)
-            correct_answers_text = ', '.join([answer.text for answer in correct_answers])  # Collect correct answer texts
+            correct_answers_text = ", ".join(
+                [answer.text for answer in correct_answers]
+            )  # Collect correct answer texts
 
-            if set(map(int, selected_answers)) == set(correct_answers.values_list('id', flat=True)):
+            if set(map(int, selected_answers)) == set(
+                correct_answers.values_list("id", flat=True)
+            ):
                 total_points += 5
-                results.append((question, 'Correct', None))  # No need to show correct answer if it's correct
+                results.append(
+                    (question, "Correct", None)
+                )  # No need to show correct answer if it's correct
             else:
-                results.append((question, 'Incorrect', correct_answers_text))  # Pass correct answer text for incorrect results
+                results.append(
+                    (question, "Incorrect", correct_answers_text)
+                )  # Pass correct answer text for incorrect results
 
         total_questions = len(questions)
         total_possible_score = total_questions * 5
@@ -278,14 +288,21 @@ def create_subject(request):
             print(f"Subject: {subject.name if subject else 'No subject found'}")
             print(f"User {request.user.email} added to subject '{subject.name}'")
 
-            return redirect('create_category')
+            context = {
+                'subject': subject,
+                'question_count': Question.objects.filter(quiz__category__subject=subject).count(),
+                'user': request.user,
+                
+            }
+            
+            response = render(request, 'home/partials/subject-rows.html', context)
+            response['HX-Trigger'] = 'success'  # Trigger HTMX event
+            return response
+
     else:
         form = SubjectForm()
 
-    return render(request, 'home/create_subject.html', {'form': form})
-
-
-
+    return render(request, "home/create_subject.html", {"form": form})
 
 
 
@@ -298,27 +315,36 @@ def add_question(request):
         if question_form.is_valid():
             # Save the question first
             question = question_form.save()
-            
 
             # Get correct answers selected by the user
-            correct_answers = question_form.cleaned_data['correct_answers']
+            correct_answers = question_form.cleaned_data["correct_answers"]
             for i in range(1, 5):
-                answer_text = question_form.cleaned_data.get(f'answer{i}')
-                is_correct = str(i) in correct_answers  # Mark as correct if the answer index is selected
-                answer = Answer(question=question, text=answer_text, is_correct=is_correct)
+                answer_text = question_form.cleaned_data.get(f"answer{i}")
+                is_correct = (
+                    str(i) in correct_answers
+                )  # Mark as correct if the answer index is selected
+                answer = Answer(
+                    question=question, text=answer_text, is_correct=is_correct
+                )
                 answer.save()
 
-            return redirect('subject-list')  # Redirect to the question list page or success page
+            # Check the action and redirect accordingly
+            action = request.POST.get('action')
+            if action == 'save_finish':
+                return redirect('subject-list')  # Redirect to the subject list page
+            elif action == 'save_new':
+                return redirect('add_question')  # Reload the add question page for a new entry
+
         else:
             # If the form is invalid, re-render the form with error messages
-            return render(request, 'home/add_question.html', {'question_form': question_form})
+            return render(
+                request, "home/add_question.html", {"question_form": question_form}
+            )
 
     else:
         question_form = QuestionForm(user=request.user)
 
-    return render(request, 'home/add_question.html', {'question_form': question_form})
-
-
+    return render(request, "home/add_question.html", {"question_form": question_form})
 
 
 def create_category(request):
@@ -348,7 +374,10 @@ def create_category(request):
             print(f"User {request.user.email} added to category '{category.name}'")
             # Save the category instance
             # Redirect to a success page or another view
-            return redirect('create_quiz')  # Redirect to a category listing page or success page
+            response = render(request, 'home/partials/category-rows.html', {'category': category})
+            response['HX-Trigger'] = 'success'  # Trigger HTMX event
+            return response
+            
     else:
         form = CategoryForm(user=request.user) # Pass user when rendering the form
 
@@ -364,7 +393,11 @@ def create_quiz(request):
         if form.is_valid():
             quiz = form.save()  #  Save the quiz instance
             quiz.users.add(request.user)  #  Link the quiz to the user
-            return redirect('add_question')  # Redirect after saving
+            # return redirect('add_question')  # Redirect after saving
+            response = render(request, 'home/partials/quiz-rows.html', {'quiz': quiz})
+            response['HX-Trigger'] = 'success'  # Trigger HTMX event
+            return response
+
     else:
         form = QuizForm(user=request.user)  #  Pass 'user' when rendering
 
@@ -376,179 +409,284 @@ def create_quiz(request):
 
 
 
-
-#api
+# api
 class SubjectsAPIView(ListAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
-    
-    
+
+
 class SubjectsDetailAPIView(RetrieveAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
-    
-    
+
 
 class CatrgoryAPIView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    
+
+
 class QuizAPIView(ListAPIView):
-    queryset= Quiz.objects.all()
+    queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
 
 
 class QuestionAPIView(ListAPIView):
-    
+
     serializer_class = QuestionSerializer
-    
+
     def get_queryset(self):
-        quiz_pk = self.kwargs['quiz_pk']
-        return Question.objects.filter(quiz_id=quiz_pk).prefetch_related('answers')
-    
+        quiz_pk = self.kwargs["quiz_pk"]
+        return Question.objects.filter(quiz_id=quiz_pk).prefetch_related("answers")
+
+
 class CreateSubjectAPIView(CreateAPIView):
-    queryset= Subject.objects.all()
+    queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
-    
+
+
 class CreateCategoryAPIView(CreateAPIView):
-    queryset= Category.objects.all()
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    
+
+
 class CreateQuizAPIView(CreateAPIView):
-    queryset=Quiz.objects.all()
+    queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    
+
+
 class CreateQuestionAPIView(CreateAPIView):
-    queryset= Question.objects.all()
+    queryset = Question.objects.all()
     serializer_class = QuestionCreateSerializer
 
+
 class UpdateSubjectsAPIView(UpdateAPIView):
-    queryset= Subject.objects.all()
+    queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+
 
 class UpdateCategoryAPIView(UpdateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+
 class UpdateQuizAPIView(UpdateAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+
 
 class UpdateQuestionAPIView(UpdateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionCreateSerializer
 
+
 class DeleteSubjectAPIView(DestroyAPIView):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+
 
 class DeleteCategoryAPIView(DestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+
 class DeleteQuizAPIView(DestroyAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+
 
 class DeleteQuestionAPIView(DestroyAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionCreateSerializer
 
 
-#ModelViewSet
+# ModelViewSet
+
 
 class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
+
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
 
 class QuizViewSet(ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
 
+
 class QuestionViewSet(ModelViewSet):
     queryset = Question.objects.all()
-    
+
     def get_serializer_class(self):
         """Use different serializer for list/retrieve and create/update"""
-        if self.action in ['list', 'retrieve']:
+        if self.action in ["list", "retrieve"]:
             return QuestionSerializer  # Read-only with answers
         return QuestionCreateSerializer  # Writable with nested answers
 
     def get_queryset(self):
         """Filter by quiz ID if provided"""
-        quiz_pk = self.request.query_params.get('quiz_pk')
+        quiz_pk = self.request.query_params.get("quiz_pk")
         if quiz_pk:
-            return Question.objects.filter(quiz_id=quiz_pk).prefetch_related('answers')
+            return Question.objects.filter(quiz_id=quiz_pk).prefetch_related("answers")
         return super().get_queryset()
-    
-    
+
+
 class CustomUserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [AllowCreateUser]  # Apply the custom permission
 
-    
-    
+
 class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data["user"]
 
-        
         # Ensure only active users can get a token
         if not user.is_active:
             return Response({"error": "User account is disabled."}, status=403)
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+        return Response({"token": token.key})
 
   
 class SubjectUpdateView(UpdateView):
     model = Subject
-    template_name = 'home/update-subject.html'
     form_class = SubjectForm
-    success_url = reverse_lazy('subject-list')
+    template_name = 'home/partials/update-subject-modal.html'
+
+    def form_valid(self, form):
+        subject = self.get_object()
+        current_user = self.request.user
+
+        # Check if other users are using this subject
+        other_users = subject.users.exclude(id=current_user.id)
+
+        if other_users.exists():
+            # Detach current user from the shared subject
+            subject.users.remove(current_user)
+
+            # Create a new subject with updated values
+            new_subject = form.save(commit=False)
+            new_subject.pk = None  # So it will create a new object
+            new_subject.save()
+            new_subject.users.add(current_user)
+            subject = new_subject  # Use the new subject for rendering
+        else:
+            # Safe to update the subject since it's only used by this user
+            subject = form.save()
+
+        # Count related questions
+        question_count = Question.objects.filter(quiz__category__subject=subject).count()
+
+        context = {
+            'subject': subject,
+            'question_count': question_count
+        }
+
+        html = render(self.request, 'home/partials/subject-rows.html', context).content
+        response = HttpResponse(html)
+        response['HX-Trigger'] = 'subjectUpdated'
+        return response
+
+    
+
+       
+
+    # def get_success_url(self):
+        # You can redirect to a success page or return an empty response
+        # return reverse_lazy('subject-list')
     
     
 class CategoryUpdateView(UpdateView):
     model = Category
-    template_name = 'home/update-category.html'
+    template_name = 'home/partials/category-update-modal.html'
     form_class = CategoryForm
-    success_url = reverse_lazy('create_category') 
+
+    def form_valid(self, form):
+        category = self.get_object()
+        current_user = self.request.user
+
+        # Check if other users are using this category
+        other_users = category.users.exclude(id=current_user.id)
+
+        if other_users.exists():
+            # Detach current user from the shared category
+            category.users.remove(current_user)
+
+            # Create a new category with the updated values
+            new_category = form.save(commit=False)
+            new_category.pk = None  # Forces creation of new object
+            new_category.save()
+            new_category.users.add(current_user)
+            category = new_category  # For rendering
+        else:
+            # Safe to update directly
+            category = form.save()
+
+        # Render updated row
+        context = {'category': category}
+        response = render(self.request, 'home/partials/category-rows.html', context)
+        response['HX-Trigger'] = 'categoryUpdated'
+        return response
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return Category.objects.filter(users=self.request.user)
-        else:
-            return Category.objects.none()
-        
+        return Category.objects.none()
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        # Pass the logged-in user to the form
         kwargs['user'] = self.request.user
         return kwargs
+
     
 class QuizUpdateView(UpdateView):
     model = Quiz
-    template_name = 'home/update-quiz.html'
+    template_name = 'home/partials/update-quiz-modal.html'
     form_class = QuizForm
-    success_url = reverse_lazy('create_quiz') 
+
+    def form_valid(self, form):
+        quiz = self.get_object()
+        current_user = self.request.user
+
+        # Check if other users are using this quiz
+        other_users = quiz.users.exclude(id=current_user.id)
+
+        if other_users.exists():
+            # Detach current user from the shared quiz
+            quiz.users.remove(current_user)
+
+            # Create a new quiz with the updated values
+            new_quiz = form.save(commit=False)
+            new_quiz.pk = None  # Force creation of a new object
+            new_quiz.save()
+            new_quiz.users.add(current_user)
+            quiz = new_quiz  # Use new quiz for rendering
+        else:
+            # Safe to update directly
+            quiz = form.save()
+
+        context = {'quiz': quiz}
+        response = render(self.request, 'home/partials/quiz-rows.html', context)
+        response['HX-Trigger'] = 'quizUpdated'
+        return response
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
             return Quiz.objects.filter(users=self.request.user)
-        else:
-            return Quiz.objects.none()
-    
+        return Quiz.objects.none()
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        # Pass the logged-in user to the form
         kwargs['user'] = self.request.user
         return kwargs
+
     
 class QuizDeleteView(DeleteView):
     model = Quiz
@@ -593,4 +731,113 @@ def delete_question(request, question_id):
         question.delete()
         return redirect('quiz-questions', quiz_pk=question.quiz.id)
     
-    return render(request, 'home/confirm_delete.html', {'question': question})
+    return render(request, 'home/partials/confirm_delete_modal.html', {'question': question})
+
+
+def generate_quiz(request):
+    context = {}
+    question_form = QuestionForm(request.POST, user=request.user)
+
+    if request.method == "POST":
+        if "save_db" in request.POST:
+            selected_quiz_id = request.POST.get("quiz")
+            my_data = request.session.get("parsed_output")
+
+            if not selected_quiz_id or not my_data:
+                return HttpResponse("❌ Quiz ID or parsed data is missing.")
+
+            quiz = get_object_or_404(Quiz, id=selected_quiz_id)
+
+            for data in my_data:
+                explanation_text = f"{data['explanation']}\n\nWhy Not Others?\n"
+                for key, reason in data["why_not"].items():
+                    explanation_text += f"- {key}: {reason or 'Not provided'}\n"
+
+                question = Question.objects.create(
+                    quiz=quiz,
+                    text=data["question"],
+                    explanation=explanation_text,
+                    example_code=data.get("example")
+                )
+
+                correct_key = data["correct_answer"].lower()
+                for key, answer_text in data["options"].items():
+                    Answer.objects.create(
+                        question=question,
+                        text=answer_text,
+                        is_correct=(key.lower() == correct_key)
+                    )
+
+            
+            return redirect("quiz-questions", quiz_pk=selected_quiz_id)
+
+        elif "upload_excel" in request.POST:
+            try:
+                uploaded_file = request.FILES["quiz_file"]
+                if not uploaded_file.name.endswith(".xlsx"):
+                    return HttpResponse("❌ Only .xlsx files are allowed.")
+
+                sanitized_filename = get_valid_filename(uploaded_file.name)
+                sanitized_filename = os.path.basename(sanitized_filename)
+                relative_path = os.path.join("user_uploads", sanitized_filename)
+                default_storage.save(relative_path, ContentFile(uploaded_file.read()))
+
+                context["upload_success"] = True
+                context["uploaded_path"] = os.path.join(settings.MEDIA_URL, relative_path)
+
+                file_path = os.path.join(settings.MEDIA_ROOT, relative_path)
+                script_path = os.path.join(settings.BASE_DIR, "apps", "home", "utils", "read_from_excelfile.py")
+
+                result = subprocess.run(["python", script_path, file_path], capture_output=True, text=True)
+                if result.returncode != 0:
+                    return HttpResponse(f"❌ Error running script: {result.stderr}")
+
+                try:
+                    parsed_output = json.loads(result.stdout)
+                except json.JSONDecodeError as e:
+                    return HttpResponse(f"❌ Failed to parse script output as JSON: {str(e)}")
+
+                context["script_output"] = parsed_output
+                request.session["parsed_output"] = parsed_output
+
+            except Exception as e:
+                return HttpResponse(f"❌ Upload Error: {e}")
+
+        elif "generate_excel" in request.POST:
+            try:
+                num_questions = int(request.POST["num_questions"])
+                user_id = request.user.id
+                filename = generate_excel_file(user_id, num_questions)
+                file_path = os.path.join(settings.MEDIA_ROOT, "exports", filename)
+                context["filename"] = filename
+            except Exception as e:
+                return HttpResponse(f"❌ Error: {e}")
+
+    context["question_form"] = question_form
+    return render(request, "home/generate_quiz.html", context)
+
+
+def download_quiz_file(request):
+    # Get the filename from the GET request
+    filename = request.GET.get("filename")
+
+    # Construct the full path to the file
+    file_path = os.path.join(settings.MEDIA_ROOT, "exports", filename)
+
+    # Ensure the file exists
+    if os.path.exists(file_path):
+        # Open the file and serve it as a download response
+        with open(file_path, "rb") as file:
+            response = HttpResponse(
+                file.read(),
+                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+            response["Content-Disposition"] = f'attachment; filename="{filename}"'
+            return response
+    else:
+        return HttpResponse("❌ File not found.")
+
+
+
+def insert_question_method(request):
+    return render(request, "home/insert_question_method.html")
