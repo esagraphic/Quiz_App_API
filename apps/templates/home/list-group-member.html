@@ -1,0 +1,83 @@
+{% extends "layouts/base.html" %}
+{% block title %} Subjects {% endblock %}
+{% block content %}
+<div class="content">
+    <!-- Trigger Button for Subject Modal -->
+    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#subjectModal">
+        Add New Subject
+    </button>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">List of Members in {{group.name}}</h4>
+
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table tablesorter">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th>Group Members</th>
+                                    <th class="text-center">Status</th>
+                                    {%if user.is_authenticated%}
+                                    <th class="text-end">Actions</th> <!-- Added column for the Update button -->
+                                    {%endif%}
+                                </tr>
+                            </thead>
+                            <tbody id="subject-table-body">
+                                {% for user, is_accepted in members %}
+                                <!-- Subject Row -->
+                                <tr id="">
+
+                                    <td>
+                                        <a href="">
+                                            {{ user.username }}
+                                        </a>
+                                    </td>
+
+                                    <td class="text-center">{% if is_accepted %}
+                                        Accepted
+                                        {% else %}
+                                        Declined
+                                        {% endif %}</td>
+
+                                    {% if user.is_authenticated %}
+                                    <td class="text-end">
+                                        <!-- Update Button -->
+                                        <button class="btn btn-warning btn-sm"
+                                            hx-get="" hx-target="body"
+                                            hx-swap="beforeend">
+                                            Update
+                                        </button>
+
+                                        <!-- Delete Button that opens the modal -->
+                                        <button class="btn btn-danger btn-sm"
+                                            hx-get="" hx-target="body"
+                                            hx-swap="beforeend">
+                                            Delete
+                                        </button>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No group found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End of Subjects Table -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'home/partials/new-create-subject.html' %}
+
+
+</div>
+
+{% endblock content %}

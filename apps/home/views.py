@@ -16,8 +16,8 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView , CreateView , DetailView , UpdateView , DeleteView
-from .models import Subject, Category, Quiz, Question, Answer, CustomUser   
-from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
+from .models import Subject, Category, Quiz, Question, Answer, CustomUser, Group, GroupInvitation, GroupQuiz
+from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm , GroupForm
 from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer,CustomUserSerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -841,3 +841,43 @@ def download_quiz_file(request):
 
 def insert_question_method(request):
     return render(request, "home/insert_question_method.html")
+
+
+
+
+def create_group(request):
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            group = form.save(commit=False)
+            group.created_by = request.user
+            group.save()
+            group.users.add(request.user)  # Add the creator to the group
+            return redirect('create_group')  # Redirect to a list of groups or another page
+
+    else:
+        form = GroupForm()
+
+    return render(request, 'home/group-list.html', {'form': form})
+
+def group_list(request):
+    if request.user.is_authenticated:
+        groups = Group.objects.filter(created_by=request.user)
+    else:
+        groups = Group.objects.none()
+        
+    print(f"Groups: {groups}")
+    return render(request, 'home/group-list.html', {'groups': groups})
+
+
+def list_groups_members(request, group_id):
+    # Get the group object by its ID
+    group = get_object_or_404(Group, id=group_id)
+    
+    # Fetch all group invitations for this group, and get the users and their invitation statuses
+    invitations = GroupInvitation.objects.filter(group=group)
+    
+    # Create a list of tuples containing user and their invitation status
+    members = [(invitation.user, invitation.is_accepted) for invitation in invitations]
+    
+    return render(request, 'home/list-group-member.html', {'group': group, 'members': members})

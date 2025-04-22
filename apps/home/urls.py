@@ -18,6 +18,9 @@ from .views import (
     generate_quiz,
     download_quiz_file,
     insert_question_method,
+    create_group,
+    group_list,
+    list_groups_members,
 )
 
 urlpatterns = [
@@ -61,6 +64,9 @@ urlpatterns = [
     path('download_quiz_file/', download_quiz_file, name='download_quiz_file'),
     path("insert-question-method/", insert_question_method, name="insert_question_method"),
 
+
+    path("create-group/", group_list, name="create_group"),
+    path("group_members/<int:group_id>/", list_groups_members, name="group_members"),
 
     # Matches any HTML file
     re_path(r"^.*\.*", views.pages, name="pages"),

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Subject , Category , Quiz , Question , Answer
+from .models import Subject , Category , Quiz , Question , Answer ,   Group , GroupInvitation , GroupQuiz 
 
 class SubjectForm(forms.ModelForm):
     class Meta:
@@ -72,3 +72,20 @@ class QuestionForm(forms.ModelForm):
                 field.widget.attrs.update({'class': 'mt-2'})
             else:
                 field.widget.attrs.update({'class': 'w-full p-2 border rounded-md mt-1'})
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name', 'description']
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Extract 'user' from kwargs
+        super().__init__(*args, **kwargs)  # Initialize the form
+
+        if user:
+            self.fields['name'].queryset = Group.objects.filter(created_by=user)  # Filter groups created by the user
+        else:
+            self.fields['name'].queryset = Group.objects.none()  # Default to empty queryset
+
+        # Add Tailwind CSS classes to form fields
+       
