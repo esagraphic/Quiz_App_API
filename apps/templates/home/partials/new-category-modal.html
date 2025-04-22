@@ -11,7 +11,10 @@
       </div>
       
       <div class="modal-body">
-        <form method="POST" id="category-form">
+        <form method="POST" id="category-form" hx-post="{% url 'create_category' %}" 
+              hx-target="#category-table-body" 
+              hx-on:success="this.reset(); $('#createCategoryModal').modal('hide');"
+              hx-swap="afterbegin">
           {% csrf_token %}
           <div class="form-group">
             <label>Subject</label>
@@ -33,4 +36,3 @@
 </div>
 </div>
 
-        

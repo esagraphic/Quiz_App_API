@@ -11,7 +11,7 @@ from apps.home.models import Quiz, Question, Answer
 
 # Create a new quiz
 quiz = Quiz.objects.create(
-    category_id=2,  # Set category ID
+    category_id=15,  # Set category ID
     name="Forms and Auth",  # Set quiz name
     is_private=False
 )

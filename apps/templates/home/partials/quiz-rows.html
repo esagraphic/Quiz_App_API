@@ -1,0 +1,18 @@
+<tr id="quiz-row-{{ quiz.id }}">
+    <td>{{ quiz.id }}</td>
+    <td>{{ quiz.name }}</td>
+    <td>{{ quiz.category.name }}</td> <!-- Assuming quiz.category is a related object -->
+    <td>
+      <!-- Update Button -->
+      <!-- <a href="{% url 'update_quiz' quiz.id %}" class="btn btn-warning btn-sm">Update</a> -->
+      <button 
+      class="btn btn-warning btn-sm"
+      hx-get="{% url 'update_quiz' quiz.id %}" 
+      hx-target="body" 
+      hx-swap="beforeend"
+  >
+      Update
+  </button> 
+      
+    </td>
+  </tr>

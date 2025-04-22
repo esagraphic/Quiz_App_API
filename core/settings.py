@@ -190,3 +190,31 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Your email address (set in .env file)
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Your email password (set in .env file)
 DEFAULT_FROM_EMAIL = 'QuizApp <noreply@chlosta.live>'  # Replace with your app's email
+
+# django-allauth settings
+ACCOUNT_LOGIN_METHODS = {"email", "username"}  # Allow login with email or username
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]  # Required fields during signup
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Enforce email verification
+ACCOUNT_EMAIL_REQUIRED = True  # Email is required
+ACCOUNT_USERNAME_REQUIRED = True  # Username is required
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/login/'  # Redirect after email confirmation for logged-in users
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/login/'  # Redirect after email confirmation for anonymous users
+ACCOUNT_LOGOUT_REDIRECT_URL = '/login/'  # Redirect after logout
+LOGIN_REDIRECT_URL = '/'  # Redirect after login
+LOGOUT_REDIRECT_URL = '/login/'  # Redirect after logout
+
+# Email backend configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.your-server.de'  # Replace with your SMTP server
+EMAIL_PORT = 587  # Typically 587 for TLS
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Your email address (set in .env file)
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Your email password (set in .env file)
+DEFAULT_FROM_EMAIL = 'QuizApp <noreply@chlosta.live>'  # Replace with your app's email
+
+
+# settings.py
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
