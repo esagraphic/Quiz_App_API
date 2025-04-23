@@ -21,6 +21,7 @@ from .views import (
     create_group,
     group_list,
     list_groups_members,
+    list_my_invited_group,
 )
 
 urlpatterns = [
@@ -67,6 +68,12 @@ urlpatterns = [
 
     path("create-group/", group_list, name="create_group"),
     path("group_members/<int:group_id>/", list_groups_members, name="group_members"),
+    path("ivited-group/", list_my_invited_group, name="invited_group"),
+    path('invitation/<int:invitation_id>/accept/', views.accept_invitation_view, name='accept_invitation'),
+    path('invitation/<int:invitation_id>/decline/', views.decline_invitation_view, name='decline_invitation'),
+    path('group/<int:group_id>/quizzes/', views.user_group_quizzes, name='group_quizzes'),
+
+
 
     # Matches any HTML file
     re_path(r"^.*\.*", views.pages, name="pages"),

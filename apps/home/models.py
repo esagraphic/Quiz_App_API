@@ -110,11 +110,13 @@ class UserQuizResult(models.Model):
     is_answered = models.BooleanField(default=False)
     
 
-    def submit(self, score, time_taken):
+    def submit(self, score):
         self.score = score
-        self.time_taken = time_taken
+        
         self.is_answered = True
         self.save()
 
     def __str__(self):
         return f"Result of {self.user.email} for {self.group_quiz.quiz.name}"
+    
+

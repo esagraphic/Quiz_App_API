@@ -16,7 +16,7 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView , CreateView , DetailView , UpdateView , DeleteView
-from .models import Subject, Category, Quiz, Question, Answer, CustomUser, Group, GroupInvitation, GroupQuiz
+from .models import Subject, Category, Quiz, Question, Answer, CustomUser, Group, GroupInvitation, GroupQuiz , UserQuizResult
 from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm , GroupForm
 from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer,CustomUserSerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
@@ -223,6 +223,18 @@ class QuizQuestionsView(View):
                 results.append(
                     (question, "Incorrect", correct_answers_text)
                 )  # Pass correct answer text for incorrect results
+         # Check if quiz is part of any group
+        group_quiz = GroupQuiz.objects.filter(quiz=quiz).first()
+        if group_quiz:
+            user_result, created = UserQuizResult.objects.get_or_create(
+                group_quiz=group_quiz,
+                user=request.user
+            )
+
+            if not user_result.is_answered:
+                user_result.score = total_points
+                user_result.is_answered = True
+                user_result.save()
 
         total_questions = len(questions)
         total_possible_score = total_questions * 5
@@ -881,3 +893,44 @@ def list_groups_members(request, group_id):
     members = [(invitation.user, invitation.is_accepted) for invitation in invitations]
     
     return render(request, 'home/list-group-member.html', {'group': group, 'members': members})
+
+
+def list_my_invited_group(request):
+    if request.user.is_authenticated:
+        invitations = GroupInvitation.objects.filter(user=request.user)
+    else:
+        invitations = GroupInvitation.objects.none()
+        
+    return render(request, 'home/list-my-invited-group.html', {'invitations': invitations})
+
+
+def accept_invitation_view(request, invitation_id):
+    invitation = get_object_or_404(GroupInvitation, id=invitation_id, user=request.user)
+    invitation.accept_invitation()
+    return redirect('invited_group')
+
+
+def decline_invitation_view(request, invitation_id):
+    invitation = get_object_or_404(GroupInvitation, id=invitation_id, user=request.user)
+    invitation.decline_invitation()
+    return redirect('invited_group')
+
+
+
+
+def user_group_quizzes(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    quizzes = GroupQuiz.objects.filter(group=group).select_related('quiz')
+
+    user_results = UserQuizResult.objects.filter(user=request.user).select_related('group_quiz__quiz', 'group_quiz__group')
+
+    print("User Results:")
+    for result in user_results:
+        print(f"Quiz: {result.group_quiz.quiz.name}, Group: {result.group_quiz.group.name}, Score: {result.score}, Answered: {result.is_answered}")
+
+    return render(request, 'home/user-group-quizzes.html', {
+        'group': group,
+        'quizzes': quizzes,
+        'user_results': user_results
+    })
+
