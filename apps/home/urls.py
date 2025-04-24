@@ -22,7 +22,9 @@ from .views import (
     group_list,
     list_groups_members,
     list_my_invited_group,
-)
+    group_quiz_results,
+    create_group,
+    )
 
 urlpatterns = [
     # Include API URLs separately
@@ -66,12 +68,19 @@ urlpatterns = [
     path("insert-question-method/", insert_question_method, name="insert_question_method"),
 
 
-    path("create-group/", group_list, name="create_group"),
+    path("groups_list/", group_list, name="group_list"),
+    path("groups/create/", create_group, name="create_group"),
+
     path("group_members/<int:group_id>/", list_groups_members, name="group_members"),
-    path("ivited-group/", list_my_invited_group, name="invited_group"),
+    path("invited-group/", list_my_invited_group, name="invited_group"),
     path('invitation/<int:invitation_id>/accept/', views.accept_invitation_view, name='accept_invitation'),
     path('invitation/<int:invitation_id>/decline/', views.decline_invitation_view, name='decline_invitation'),
     path('group/<int:group_id>/quizzes/', views.user_group_quizzes, name='group_quizzes'),
+    path('group/<int:group_id>/quiz/<int:quiz_id>/results/', group_quiz_results, name='group-quiz-results'),
+    path('groups/<int:group_id>/add-user/', views.group_add_user, name='group_add_user'),
+    path('group-quiz/create/', views.create_group_quiz, name='create_group_quiz'),
+
+
 
 
 

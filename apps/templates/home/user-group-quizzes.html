@@ -20,7 +20,7 @@
                             <thead class="text-primary">
                                 <tr>
                                     <th>Quiz Name</th>
-                                    <th>Description</th>
+                                    
                                     <th>Created At</th>
                                 </tr>
                             </thead>
@@ -28,7 +28,7 @@
                                 {% for group_quiz in quizzes %}
                                 <tr>
                                     <td><a href="{% url 'quiz-questions' quiz_pk=group_quiz.quiz.id %}">{{ group_quiz.quiz.name }}</a></td>
-                                    <td>{{ group_quiz.quiz.description }}</td>
+                                    
                                     <td>{{ group_quiz.created_at|date:"Y-m-d H:i" }}</td>
                                 </tr>
                                 {% empty %}
