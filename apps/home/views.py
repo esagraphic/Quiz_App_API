@@ -9,15 +9,15 @@ import subprocess
 from django import template
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView , CreateView , DetailView , UpdateView , DeleteView
-from .models import Subject, Category, Quiz, Question, Answer, CustomUser   
-from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm
+from .models import Subject, Category, Quiz, Question, Answer, CustomUser, Group, GroupInvitation, GroupQuiz , UserQuizResult
+from .forms import SubjectForm , QuestionForm , CategoryForm, QuizForm , GroupForm , GroupInvitationForm , GroupQuizForm
 from .serializers import SubjectSerializer, CategorySerializer, QuizSerializer,QuestionSerializer, QuestionCreateSerializer,CustomUserSerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -223,6 +223,18 @@ class QuizQuestionsView(View):
                 results.append(
                     (question, "Incorrect", correct_answers_text)
                 )  # Pass correct answer text for incorrect results
+         # Check if quiz is part of any group
+        group_quiz = GroupQuiz.objects.filter(quiz=quiz).first()
+        if group_quiz:
+            user_result, created = UserQuizResult.objects.get_or_create(
+                group_quiz=group_quiz,
+                user=request.user
+            )
+
+            if not user_result.is_answered:
+                user_result.score = total_points
+                user_result.is_answered = True
+                user_result.save()
 
         total_questions = len(questions)
         total_possible_score = total_questions * 5
@@ -841,3 +853,138 @@ def download_quiz_file(request):
 
 def insert_question_method(request):
     return render(request, "home/insert_question_method.html")
+
+
+
+
+def create_group(request):
+    if request.method == "POST":
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            group = form.save(commit=False)
+            group.created_by = request.user
+            group.save()
+            return render(request, 'home/partials/group-row.html', {'group': group})
+        else:
+            return HttpResponseBadRequest("Invalid data")
+    else:
+        form = GroupForm()
+        return render(request, 'home/partials/group-modal.html', {'form': form})
+
+
+def group_list(request):
+    if request.user.is_authenticated:
+        groups = Group.objects.filter(created_by=request.user)
+    else:
+        groups = Group.objects.none()
+        
+    print(f"Groups: {groups}")
+    form= GroupForm()
+    group_quiz_form = GroupQuizForm(user=request.user)  # If you filtered groups in the form's __init__
+
+    return render(request, 'home/group-list.html', {'groups': groups , 'form': form , 'group_quiz_form': group_quiz_form})
+
+
+def list_groups_members(request, group_id):
+    # Get the group object by its ID
+    group = get_object_or_404(Group, id=group_id)
+    
+    # Fetch all group invitations for this group, and get the users and their invitation statuses
+    invitations = GroupInvitation.objects.filter(group=group)
+    
+    # Create a list of tuples containing user and their invitation status
+    members = [(invitation.user, invitation.is_accepted) for invitation in invitations]
+    form = GroupInvitationForm()
+    return render(request, 'home/list-group-member.html', {'group': group, 'members': members , 'form': form})
+
+
+def list_my_invited_group(request):
+    if request.user.is_authenticated:
+        invitations = GroupInvitation.objects.filter(user=request.user)
+    else:
+        invitations = GroupInvitation.objects.none()
+        
+    return render(request, 'home/list-my-invited-group.html', {'invitations': invitations})
+
+
+def accept_invitation_view(request, invitation_id):
+    invitation = get_object_or_404(GroupInvitation, id=invitation_id, user=request.user)
+    invitation.accept_invitation()
+    return redirect('invited_group')
+
+
+def decline_invitation_view(request, invitation_id):
+    invitation = get_object_or_404(GroupInvitation, id=invitation_id, user=request.user)
+    invitation.decline_invitation()
+    return redirect('invited_group')
+
+
+
+
+def user_group_quizzes(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+    quizzes = GroupQuiz.objects.filter(group=group).select_related('quiz')
+
+    user_results = UserQuizResult.objects.filter(user=request.user).select_related('group_quiz__quiz', 'group_quiz__group')
+
+    print("User Results:")
+    for result in user_results:
+        print(f"Quiz: {result.group_quiz.quiz.name}, Group: {result.group_quiz.group.name}, Score: {result.score}, Answered: {result.is_answered}")
+
+    return render(request, 'home/user-group-quizzes.html', {
+        'group': group,
+        'quizzes': quizzes,
+        'user_results': user_results
+    })
+
+
+
+
+def group_quiz_results(request, group_id, quiz_id):
+    group = get_object_or_404(Group, id=group_id)
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    group_quiz = get_object_or_404(GroupQuiz, group=group, quiz=quiz)
+
+    results = UserQuizResult.objects.filter(group_quiz=group_quiz).select_related('user')
+
+    return render(request, 'home/group-quiz-results.html', {
+        'group': group,
+        'quiz': quiz,
+        'results': results,
+    })
+
+def group_add_user(request, group_id):
+    group = get_object_or_404(Group, id=group_id)
+
+    if request.method == "POST":
+        form = GroupInvitationForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['email']
+            invitation = form.save(commit=False)
+            invitation.user = user
+            invitation.group = group
+            invitation.invited_by = request.user
+            invitation.save()
+
+            # Get the added user and their acceptance status
+            members = [(invitation.user, invitation.is_accepted)]
+            
+            # Render just the row for the new user
+            return render(request, 'home/partials/member-row.html', {'members': members, 'group': group})
+        else:
+            return HttpResponseBadRequest("Invalid data")
+    else:
+        form = GroupInvitationForm()
+        return render(request, 'home/partials/group-user-modal.html', {'form': form, 'group': group})
+    
+def create_group_quiz(request):
+    if request.method == "POST":
+        form = GroupQuizForm(request.POST, user=request.user)
+        if form.is_valid():
+            group_quiz = form.save()
+            return render(request, 'home/partials/group-quiz-row.html', {'group_quiz': group_quiz})
+        else:
+            return render(request, 'home/partials/group-quiz-modal.html', {'form': form})
+    else:
+        form = GroupQuizForm(user=request.user)
+        return render(request, 'home/partials/group-quiz-modal.html', {'form': form})

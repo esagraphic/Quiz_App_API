@@ -1,0 +1,26 @@
+<tr id="group-row-{{ group.id }}">
+    <td>
+        <a href="{% url 'group_members' group_id=group.id %}">
+            {{ group.name }}
+        </a>
+    </td>
+
+    <td class="text-center">{{ group.description }}</td>
+
+    {% if user.is_authenticated %}
+    <td class="text-end">
+        <button class="btn btn-warning btn-sm"
+                hx-get="" 
+                hx-target="body" 
+                hx-swap="beforeend">
+            Update
+        </button>
+        <button class="btn btn-danger btn-sm"
+                hx-get=""
+                hx-target="body" 
+                hx-swap="beforeend">
+            Delete
+        </button>
+    </td>
+    {% endif %}
+</tr>

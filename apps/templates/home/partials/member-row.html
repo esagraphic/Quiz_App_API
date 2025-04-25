@@ -1,0 +1,25 @@
+{% for user, is_accepted in members %}
+<tr id="">
+    <td>
+        <a href="">
+            {{ user.username }}
+        </a>
+    </td>
+    <td class="text-center">
+        {% if is_accepted %}
+            Accepted
+        {% else %}
+            Pending
+        {% endif %}
+    </td>
+    <td class="text-end">
+        <button class="btn btn-danger btn-sm"
+                hx-get=""
+                hx-target="#member-row-{{ user.id }}"
+                hx-swap="outerHTML">
+            Remove
+        </button>
+    </td>
+</tr>
+
+{% endfor %}

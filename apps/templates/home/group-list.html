@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+{% block title %} Subjects {% endblock %}
+{% block content %}
+<div class="content">
+    <!-- Trigger Button for Subject Modal -->
+    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#groupModal">
+        Add New Group
+      </button>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">List of Curent Group</h4>
+
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table tablesorter">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th>Grup Name</th>
+                                    <th class="text-center">Description</th>
+                                    {%if user.is_authenticated%}
+                                    <th class="text-end">Actions</th> <!-- Added column for the Update button -->
+                                    {%endif%}
+                                </tr>
+                            </thead>
+                            <tbody id="subject-table-body">
+                                {% for group in groups %}
+                                <!-- Subject Row -->
+                                {% include 'home/partials/group-row.html' %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End of Subjects Table -->
+                    </div>
+                </div>
+            </div>
+           <!-- Button to trigger the modal -->
+<button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#groupQuizModal">
+    Add New Quiz To Group
+</button>
+
+<!-- Include the modal form -->
+{% include 'home/partials/group-quiz-modal.html' %}
+
+<!-- Quiz list card -->
+<div class="card mt-3">
+    <div class="card-header">
+        <h4 class="card-title">List of available Quizzes</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table tablesorter">
+                <thead class="text-primary">
+                    <tr>
+                        <th>Quiz Name</th>
+                        <th class="text-center">Group Name</th>
+                        <th class="text-center">Created Date</th>
+                        {% if user.is_authenticated %}
+                        <th class="text-end">Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody id="group-quiz-table-body">
+                    {% for group in groups %}
+                        {% for group_quiz in group.quizzes.all %}
+                            {% include 'home/partials/group-quiz-row.html' with group_quiz=group_quiz %}
+                        
+                        {% endfor %}
+                    
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+                
+        </div>
+    </div>
+    {% include 'home/partials/group-modal.html' %}
+    
+
+</div>
+
+{% endblock content %}

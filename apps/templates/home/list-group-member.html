@@ -1,0 +1,39 @@
+{% extends "layouts/base.html" %}
+{% block title %} Subjects {% endblock %}
+{% block content %}
+<div class="content">
+    <!-- Trigger Button for Subject Modal -->
+    <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#addUserModal">
+        Add New Member
+    </button>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">List of Members in {{group.name}}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table tablesorter">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th>Group Members</th>
+                                    <th class="text-center">Status</th>
+                                    {% if user.is_authenticated %}
+                                    <th class="text-end">Actions</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody id="group-user-table-body">
+                                {% include 'home/partials/member-row.html' %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'home/partials/group-user-modal.html' %}
+</div>
+{% endblock content %}
