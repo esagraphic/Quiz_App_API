@@ -811,6 +811,7 @@ def generate_quiz(request):
 
                 context["script_output"] = parsed_output
                 request.session["parsed_output"] = parsed_output
+                print(f"Parsed Output: {parsed_output}")
 
             except Exception as e:
                 return HttpResponse(f"❌ Upload Error: {e}")
