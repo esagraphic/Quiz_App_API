@@ -1046,21 +1046,10 @@ def generate_quiz_ai(request):
                 quiz_name = quiz.name
                 print(f"Quiz Name: {quiz_name}")
 
-                # Pass data to the script
-                # script_path = os.path.join(settings.BASE_DIR, "apps", "home", "utils", "AI-quiz.py")
-                # result = subprocess.run(
-                #     ["python", script_path, subject_name, category_name, quiz_name, str(num_questions)],
-                #     capture_output=True,
-                #     text=True
-                # )
-                # if result.returncode != 0:
-                #     return HttpResponse(f"❌ Error running script: {result.stderr}")
-
-                # # Parse the output from the script
-                # print(f"Raw Script Output: {result.stdout}")
-                print("iam here ")
+                
+                # print("iam here ")
                 quiz_data = ai_generate_quiz(subject_name, category_name, quiz_name, num_questions)
-                print(f"Quiz Data: {quiz_data}")
+                # print(f"Quiz Data: {quiz_data}")
                 try:
                     parsed_output = quiz_data
                 except json.JSONDecodeError as e:
