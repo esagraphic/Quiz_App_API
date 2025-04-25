@@ -1,5 +1,5 @@
 from django import forms
-from .models import Subject , Category , Quiz , Question , Answer
+from .models import Subject , Category , Quiz , Question , Answer ,   Group , GroupInvitation , GroupQuiz  , CustomUser
 
 class SubjectForm(forms.ModelForm):
     class Meta:
@@ -72,3 +72,41 @@ class QuestionForm(forms.ModelForm):
                 field.widget.attrs.update({'class': 'mt-2'})
             else:
                 field.widget.attrs.update({'class': 'w-full p-2 border rounded-md mt-1'})
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name', 'description']
+
+
+class GroupInvitationForm(forms.ModelForm):
+    email = forms.EmailField(label='User Email')  # Instead of selecting user, we'll take email as input
+
+    class Meta:
+        model = GroupInvitation
+        fields = ['email', 'is_accepted']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        try:
+            user = CustomUser.objects.get(email=email)  # Fetch the user based on the email
+        except CustomUser.DoesNotExist:
+            raise forms.ValidationError("No user found with this email address.")
+        return user  # Return the user object to associate it with the invitation
+    
+
+class GroupQuizForm(forms.ModelForm):
+    class Meta:
+        model = GroupQuiz
+        fields = ['group', 'quiz']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(GroupQuizForm, self).__init__(*args, **kwargs)
+
+        if user:
+            self.fields['group'].queryset = Group.objects.filter(created_by=user)
+            self.fields['quiz'].queryset = Quiz.objects.filter(users=user)
+        else:
+            self.fields['group'].queryset = Group.objects.none()
+            self.fields['quiz'].queryset = Quiz.objects.none()

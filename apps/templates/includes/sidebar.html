@@ -22,7 +22,7 @@
                 
                 
                 {% if user.is_authenticated %}
-                    <li class="{% if 'create_subject' in segment %} active {% endif %}">
+                    <li class="nav-item dropdown">
                         <a href="{% url 'create_subject' %}">
                             <i class="tim-icons icon-pencil"></i>
                             <p>Create Subject</p>
@@ -44,6 +44,17 @@
                         <a href="{% url 'insert_question_method' %}">
                             <i class="tim-icons icon-bulb-63"></i>
                             <p>Add Question</p>
+                        </a>
+                    </li>
+                    <li class="{% if 'group_list' in segment %} active {% endif %}">
+                        <a href="{% url 'group_list' %}">
+                            <i class="tim-icons icon-single-02"></i>     <p>My Groups</p>
+                        </a>
+                    </li>
+                    <li class="{% if 'invited_group' in segment %} active {% endif %}">
+                        <a href="{% url 'invited_group' %}">
+                            <i class="tim-icons icon-single-02"></i>
+                            <p>Joined Groups</p>
                         </a>
                     </li>
                 {% endif %}     {% if user.is_authenticated %}
