@@ -1,0 +1,86 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Generate AI Quiz{% endblock %}
+
+{% block content %}
+<div class="content">
+  <div class="row mt-4 justify-content-center">
+
+    <!-- Generate AI Quiz Card -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header text-center">
+          <h4 class="card-title">🤖 Generate AI Quiz</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <label class="block mb-2">Select Quiz:</label>
+            <div style="width: 33%; display: inline-block;">
+              {{ question_form.quiz }} <!-- This will render the 'quiz' dropdown field -->
+            </div>
+
+            <label class="d-block mt-3">Number of Questions:</label>
+            <div class="form-group">
+              <input type="number" name="num_questions" class="form-control" min="1" max="20" required>
+            </div>
+
+            <button type="submit" name="generate_ai_quiz" class="btn btn-primary btn-fill mt-3">Generate Quiz</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if script_output %}
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">🧠 Generated AI Quiz</h4>
+          <form method="POST">
+            {% csrf_token %}
+            <label class="block mb-2">Select Quiz:</label>
+            <div style="width: 33%; display: inline-block;">
+              {{ question_form.quiz }} <!-- This will render the 'quiz' dropdown field -->
+            </div>
+            <label class="d-block mt-3">Review the questions. If all looks good, save them to the database.</label>
+            
+            <button type="submit" name="save_db" class="btn btn-success btn-fill mt-2">Save to Database</button>
+          </form>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            {% for question in script_output %}
+            <li class="list-group-item mb-4">
+              <h5><strong>Question {{ forloop.counter }}:</strong> {{ question.question }}</h5>
+              <p><strong>Options:</strong></p>
+              <ul>
+                {% for key, value in question.options.items %}
+                <li><strong>{{ key }}:</strong> {{ value }}</li>
+                {% endfor %}
+              </ul>
+
+              <p><strong>Correct Answer:</strong> {{ question.correct_answer }}</p>
+
+              <p><strong>Explanation:</strong> {{ question.explanation }}</p>
+
+              <p><strong>Example:</strong></p>
+              <pre>{{ question.example }}</pre>
+
+              <p><strong>Why Not (for other options):</strong></p>
+              <ul>
+                {% for key, reason in question.why_not.items %}
+                <li><strong>{{ key }}:</strong> {{ reason }}</li>
+                {% endfor %}
+              </ul>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
