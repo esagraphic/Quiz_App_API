@@ -84,6 +84,8 @@ urlpatterns = [
     path('group/<int:group_id>/quiz/<int:quiz_id>/results/', group_quiz_results, name='group-quiz-results'),
     path('groups/<int:group_id>/add-user/', views.group_add_user, name='group_add_user'),
     path('group-quiz/create/', views.create_group_quiz, name='create_group_quiz'),
+    path('generate-quiz-ai/', views.generate_quiz_ai, name='generate-quiz-ai'),
+
 
 
 
