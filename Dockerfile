@@ -10,9 +10,8 @@ COPY requirements.txt .
 # install python dependencies
 RUN pip install --upgrade pip
 RUN pip install  -r requirements.txt
-
+RUN export GEMINI_API_KEY=‘AIzaSyB-nWf0PleMvOrcZB0gpiJPZQ3GfidXMBA’
 COPY . .
-
 
 RUN python manage.py collectstatic --noinput
 
