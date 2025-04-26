@@ -1034,7 +1034,8 @@ def generate_quiz_ai(request):
             try:
                 selected_quiz_id = request.POST.get("quiz")
                 num_questions = int(request.POST.get("num_questions"))
-
+                question_language = request.POST.get("language")
+                print(f"Question Language: {question_language}")
                 # Fetch quiz details
                 quiz = get_object_or_404(Quiz, id=selected_quiz_id)
                 print(f"Selected Quiz ID: {selected_quiz_id}")
@@ -1047,9 +1048,11 @@ def generate_quiz_ai(request):
                 print(f"Quiz Name: {quiz_name}")
 
                 
-                # print("iam here ")
-                quiz_data = ai_generate_quiz(subject_name, category_name, quiz_name, num_questions)
-                # print(f"Quiz Data: {quiz_data}")
+                print("iam here ")
+                quiz_data = ai_generate_quiz(subject_name, category_name, quiz_name, num_questions,question_language)
+                print("its runing here ")
+                print(f"Quiz Data: {json.dumps(quiz_data, ensure_ascii=False, indent=2)}")
+
                 try:
                     parsed_output = quiz_data
                 except json.JSONDecodeError as e:

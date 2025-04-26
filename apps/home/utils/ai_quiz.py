@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def ai_generate_quiz(subject_name, category_name, quiz_name, num_questions):
+def ai_generate_quiz(subject_name, category_name, quiz_name, num_questions,question_language):
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("❌ GEMINI_API_KEY environment variable not found.")
@@ -20,7 +20,7 @@ def ai_generate_quiz(subject_name, category_name, quiz_name, num_questions):
     model_name = "gemini-1.5-flash"
 
     prompt_template = f"""
-Please generate {num_questions} quiz questions based on the following specifications:
+Please generate {num_questions} quiz questions based on the following specifications the questions should be in {question_language} language.:
 
 **Inputs:**
 * Subject: {subject_name}
@@ -87,3 +87,6 @@ Generate a JSON list containing exactly {num_questions} dictionary objects. Each
 
     except Exception as e:
         raise RuntimeError(f"❌ An error occurred while generating content: {e}")
+
+result = ai_generate_quiz("Mathematics", "Algebra", "Basic Algebra Quiz", 5,"Deutsch")
+print(json.dumps(result, indent=2))
