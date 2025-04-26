@@ -33,6 +33,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.utils.text import get_valid_filename
 from django.http import FileResponse
+from apps.home.utils.ai_quiz import ai_generate_quiz 
 
 
 @login_required(login_url="/login/")
@@ -811,6 +812,7 @@ def generate_quiz(request):
 
                 context["script_output"] = parsed_output
                 request.session["parsed_output"] = parsed_output
+                print(f"Parsed Output: {parsed_output}")
 
             except Exception as e:
                 return HttpResponse(f"❌ Upload Error: {e}")
@@ -988,3 +990,76 @@ def create_group_quiz(request):
     else:
         form = GroupQuizForm(user=request.user)
         return render(request, 'home/partials/group-quiz-modal.html', {'form': form})
+
+
+
+def generate_quiz_ai(request):
+    context = {}
+    question_form = QuestionForm(request.POST, user=request.user)
+
+    if request.method == "POST":
+        if "save_db" in request.POST:
+            # Same logic to save the questions to the database after reviewing them
+            selected_quiz_id = request.POST.get("quiz")
+            my_data = request.session.get("parsed_output")
+
+            if not selected_quiz_id or not my_data:
+                return HttpResponse("❌ Quiz ID or parsed data is missing.")
+
+            quiz = get_object_or_404(Quiz, id=selected_quiz_id)
+
+            for data in my_data:
+                explanation_text = f"{data['explanation']}\n\nWhy Not Others?\n"
+                for key, reason in data["why_not"].items():
+                    explanation_text += f"- {key}: {reason or 'Not provided'}\n"
+
+                question = Question.objects.create(
+                    quiz=quiz,
+                    text=data["question"],
+                    explanation=explanation_text,
+                    example_code=data.get("example")
+                )
+
+                correct_key = data["correct_answer"].lower()
+                for key, answer_text in data["options"].items():
+                    Answer.objects.create(
+                        question=question,
+                        text=answer_text,
+                        is_correct=(key.lower() == correct_key)
+                    )
+
+            return redirect("quiz-questions", quiz_pk=selected_quiz_id)
+
+        elif "generate_ai_quiz" in request.POST:
+            try:
+                selected_quiz_id = request.POST.get("quiz")
+                num_questions = int(request.POST.get("num_questions"))
+
+                # Fetch quiz details
+                quiz = get_object_or_404(Quiz, id=selected_quiz_id)
+                print(f"Selected Quiz ID: {selected_quiz_id}")
+                print(f"Number of Questions: {num_questions}")
+                subject_name = quiz.category.subject.name
+                print(f"Subject Name: {subject_name}")
+                category_name = quiz.category.name
+                print(f"Category Name: {category_name}")
+                quiz_name = quiz.name
+                print(f"Quiz Name: {quiz_name}")
+
+                
+                # print("iam here ")
+                quiz_data = ai_generate_quiz(subject_name, category_name, quiz_name, num_questions)
+                # print(f"Quiz Data: {quiz_data}")
+                try:
+                    parsed_output = quiz_data
+                except json.JSONDecodeError as e:
+                    return HttpResponse(f"❌ Failed to parse script output as JSON: {str(e)}")
+
+                context["script_output"] = parsed_output
+                request.session["parsed_output"] = parsed_output
+
+            except Exception as e:
+                return HttpResponse(f"❌ Error: {e}")
+
+    context["question_form"] = question_form
+    return render(request, "home/generate_quiz_ai.html", context)
