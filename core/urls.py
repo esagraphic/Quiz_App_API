@@ -2,7 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
@@ -18,5 +18,5 @@ urlpatterns = [
     path("", include("landing.urls"))
 ]  
 if settings.DEBUG is True:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+    urlpatterns += path(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += path(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
