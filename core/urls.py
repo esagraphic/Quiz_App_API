@@ -4,15 +4,11 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.contrib import admin
-from django.urls import path, include  # add this
-from django.conf import settings
-from django.conf.urls.static import static
-
-
-
+from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),          # Django admin route
+    path('admin/', admin.site.urls),
+    path('account/', include('allauth.urls')),  # django-allauth routes  # Django admin route
     path("", include("apps.authentication.urls")), # Auth routes - login / register
 
     # ADD NEW Routes HERE
@@ -23,3 +19,4 @@ urlpatterns = [
 ]  
 if settings.DEBUG is True:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

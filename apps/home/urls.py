@@ -1,5 +1,7 @@
 from django.urls import path, re_path, include
+from django.contrib import admin
 from apps.home import views
+from apps.authentication.views import CustomConfirmEmailView
 from .views import (
     SubjectListView,
     CategoryDetailView,
@@ -27,6 +29,9 @@ from .views import (
     )
 
 urlpatterns = [
+    # Admin and account URLs
+    path('admin/', admin.site.urls),
+
     # Include API URLs separately
     path("api/v1/", include("apps.home.api_urls")),  # All API routes under /api/v1/
 

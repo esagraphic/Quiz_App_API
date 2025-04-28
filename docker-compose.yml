@@ -3,6 +3,8 @@
 services:
   web:
     build: .
+    container_name: web_app
+    restart: always
     command: >
       sh -c "python manage.py migrate &&
              gunicorn --workers 4 --bind 0.0.0.0:8000 core.wsgi:application"
@@ -16,31 +18,32 @@ services:
     networks:
       - app-network_live
 
-  nginx:
-    image: nginx:latest
-    container_name: nginx_server
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - static_volume_live:/usr/src/app/staticfiles
-    depends_on:
-      - web
-    networks:
-      - app-network_live
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx_server
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx:/etc/nginx/conf.d
+  #     - static_volume_live:/usr/src/app/staticfiles
+  #   depends_on:
+  #     - web
+  #   networks:
+  #     - app-network_live
 
   postgres:
     image: postgres:15
     container_name: postgres_db
+    hostname: postgres
     restart: always
     environment:
-      POSTGRES_DB: quizappdb
-      POSTGRES_USER: quizappuser
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: p24_db
+      POSTGRES_USER: p24_db_usr
+      POSTGRES_PASSWORD: p24_db_pwdpassword
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    # ports: # not necessary to expose the port
-    #   - "5432:5432"
+    ports: # not necessary to expose the port
+       - "5432:5432"
     networks:
       - app-network_live
 

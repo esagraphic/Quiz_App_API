@@ -6,7 +6,24 @@ Copyright (c) 2019 - present AppSeed.us
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 from .forms import LoginForm, SignUpForm
+from allauth.account.utils import send_email_confirmation
+from allauth.account.views import ConfirmEmailView
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+
+class CustomConfirmEmailView(ConfirmEmailView):
+    def get(self, request, *args, **kwargs):
+        # Render a custom confirmation page with a button
+        return render(request, "account/email_confirm.html", {"key": kwargs.get("key")})
+
+    def post(self, request, *args, **kwargs):
+        # Process the confirmation when the button is clicked
+        response = super().post(request, *args, **kwargs)
+        messages.success(request, "Your email has been successfully confirmed. You can now log in.")
+        return redirect("login/")  # Redirect to the login page
 
 
 def login_view(request):
@@ -38,18 +55,14 @@ def register_user(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            raw_password = form.cleaned_data.get("password1")
-            user = authenticate(username=username, password=raw_password)
-
-            msg = 'User created successfully.'
+            user = form.save(commit=False)
+            user.is_active = False  # Set the user as inactive
+            user.save()
+            send_email_confirmation(request, user)  # Send email confirmation
+            msg = "A confirmation email has been sent to your email address."
             success = True
-
-            # return redirect("/login/")
-
         else:
-            msg = 'Form is not valid'
+            msg = "Form is not valid"
     else:
         form = SignUpForm()
 
