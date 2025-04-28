@@ -42,11 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.home',  # Enable the inner home (home)
+    'rest_framework',
+    'rest_framework.authtoken',
+    'landing',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'apps.authentication',
-    'apps.home',
 ]
 
 MIDDLEWARE = [
