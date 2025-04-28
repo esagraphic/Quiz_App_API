@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.home',  # Enable the inner home (home)
     'rest_framework',
     'rest_framework.authtoken',
+    'landing',
 ]
 
 MIDDLEWARE = [
