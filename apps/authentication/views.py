@@ -39,7 +39,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("/app/subject-list/")
+                return redirect("/app/subject-list")
             else:
                 msg = 'Invalid credentials'
         else:
