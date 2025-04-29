@@ -36,7 +36,7 @@ urlpatterns = [
     path("api/v1/", include("apps.home.api_urls")),  # All API routes under /api/v1/
 
     # Web URLs
-    path("", SubjectListView.as_view(), name="subject-list"),
+    path("subject-list", SubjectListView.as_view(), name="subject-list"),
     path("subjects/<int:pk>/", CategoryDetailView.as_view(), name="category-detail"),
     path("category/<int:pk>/quizzes/", QuizDetailView.as_view(), name="quiz-detail"),
     path("create-subject/", create_subject, name="create_subject"),

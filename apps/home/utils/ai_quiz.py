@@ -41,7 +41,7 @@ Generate a JSON list containing exactly {num_questions} dictionary objects. Each
     }},
     "correct_answer": "String: A single character ('a', 'b', 'c', or 'd') indicating the correct option.",
     "explanation": "String: A detailed explanation of why the correct answer is right.",
-    "example": "String or null: If the question relates to IT or programming, provide a relevant code snippet as a string. Otherwise, provide null.",
+    "example": "String or null: If the question relates to IT or programming, provide a relevant code snippet as a string but only in English becouse the coding is English. Otherwise, provide null.",
     "why_not": {{
       "a": "String or null: Brief explanation why option A is incorrect, or null if it's the correct answer.",
       "b": "String or null: Brief explanation why option B is incorrect, or null if it's the correct answer.",
@@ -88,5 +88,5 @@ Generate a JSON list containing exactly {num_questions} dictionary objects. Each
     except Exception as e:
         raise RuntimeError(f"❌ An error occurred while generating content: {e}")
 
-result = ai_generate_quiz("Mathematics", "Algebra", "Basic Algebra Quiz", 5,"Deutsch")
-print(json.dumps(result, indent=2))
+# result = ai_generate_quiz("Mathematics", "Algebra", "Basic Algebra Quiz", 5,"Deutsch")
+# print(json.dumps(result, indent=2))
