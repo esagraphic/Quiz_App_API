@@ -67,8 +67,6 @@ MIDDLEWARE = [
 
 
 ROOT_URLCONF = 'core.urls'
-LOGIN_REDIRECT_URL = "app/subject-list"  # Route defined in home/urls.py
-LOGOUT_REDIRECT_URL = "home"  # Route defined in home/urls.py
 TEMPLATE_DIR = os.path.join(CORE_DIR, "apps/templates")  # ROOT dir for templates
 
 TEMPLATES = [
@@ -181,7 +179,12 @@ ACCOUNT_USERNAME_REQUIRED = True  # Username is required
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect after signup
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/login/'  # Redirect after email confirmation for logged-in users
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/login/'  # Redirect after email confirmation for anonymous users
-ACCOUNT_LOGOUT_REDIRECT_URL = '/login/'  # Redirect after logout
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # Redirect after logout
+ACCOUNT_LOGIN_REDIRECT_URL = '/app/subject-list/'  # Redirect after login
+
+# Custom user model setting
+LOGIN_REDIRECT_URL = "/app/subject-list/"  # Route defined in home/urls.py
+LOGOUT_REDIRECT_URL = "/"  # Route defined in home/urls.py
 
 # Email backend configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
