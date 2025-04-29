@@ -57,21 +57,36 @@
                             <p>Joined Groups</p>
                         </a>
                     </li>
-                {% endif %}     {% if user.is_authenticated %}
+                {% endif %}     
+                {% if user.is_authenticated %}
                     <li>
                         <a href="{% url 'logout' %}">
                             <i class="tim-icons icon-button-power"></i>
                             <p>Logout</p>
                         </a>
                     </li>
+                    <hr style="border: 1px solid white; width: 90%;">
+                    <li>
+                        <a href="http://quiz.chlosta.live:7777" target="_blank">
+                            <i class="tim-icons icon-chat-33"></i>
+                            <p>CHAT</p>
+                        </a>
+                    </li>
                 {% else %}
+                    <li>
+                        <a href="http://quiz.chlosta.live:7777" target="_blank">
+                            <i class="tim-icons icon-chat-33"></i>
+                            <p>CHAT</p>
+                        </a>
+                    </li>
+                    <hr style="border: 1px solid white; width: 90%;">
                     <li>
                         <a href="{% url 'login' %}">
                             <i class="tim-icons icon-button-power"></i>
                             <p>Login</p>
                         </a>
                     </li>
-                    {% endif %}
+                {% endif %}
                 </ul>
         </div>
     </div>
