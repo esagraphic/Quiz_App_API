@@ -23,6 +23,7 @@
           
         
           <li><a href="#contact">Contact</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -47,7 +48,7 @@
             <p>Empower learning and fun — generate quizzes, invite friends or Students, and challenge each other anytime, anywhere.</p>
 
             <div class="d-flex">
-                <a href="{% url 'subject-list' %}" class="btn-get-started">Get Started</a>
+                <a href="/register.html" class="btn-get-started">Get Started</a>
               <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
             </div>
           </div>
@@ -143,9 +144,18 @@
           <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
             <div class="features-item">
               <a href="https://www.vmware.com/" target="_blank">
-                <i class="bi bi-server" style="color: #306998;"></i>
+                <i class="bi bi-terminal-x" style="color: #306998;"></i>
               </a>
               <h3><a href="https://www.vmware.com/" target="_blank">vmware</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="features-item">
+              <a href="https://owasp.org/" target="_blank">
+                <i class="bi bi-shield" style="color: #306998;"></i>
+              </a>
+              <h3><a href="https://owasp.org/" target="_blank">OWASP</a></h3>
             </div>
           </div><!-- End Feature Item -->
     
@@ -370,13 +380,28 @@
       <div class="container">
 
         <div class="row gy-5">
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-f.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Sumaya</h4>
+                <span>CTO / Backend Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
 
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
             <div class="member">
               <div class="pic"><img src="static/assets/img/team/team-m.jpg" class="img-fluid" alt=""></div>
               <div class="member-info">
-                <h4>Dirk</h4>
-                <span>Back end Developer</span>
+                <h4>Essa</h4>
+                <span>CEO / Back end Developer</span>
                 <div class="social">
                   <a href=""><i class="bi bi-twitter-x"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -391,8 +416,8 @@
             <div class="member">
               <div class="pic"><img src="static/assets/img/team/team-m.jpg" class="img-fluid" alt=""></div>
               <div class="member-info">
-                <h4>Essa</h4>
-                <span>Backend Developer</span>
+                <h4>Dirk</h4>
+                <span>CSO / Backend Developer</span>
                 <div class="social">
                   <a href=""><i class="bi bi-twitter-x"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -403,42 +428,11 @@
             </div>
           </div><!-- End Team Member -->
 
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="member">
-              <div class="pic"><img src="static/assets/img/team/team-m.jpg" class="img-fluid" alt=""></div>
-              <div class="member-info">
-                <h4>Juan</h4>
-                <span>Backend Developer</span>
-                <div class="social">
-                  <a href=""><i class="bi bi-twitter-x"></i></a>
-                  <a href=""><i class="bi bi-facebook"></i></a>
-                  <a href=""><i class="bi bi-instagram"></i></a>
-                  <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Team Member -->
           <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
             <div class="member">
               <div class="pic"><img src="static/assets/img/team/team-f.jpg" class="img-fluid" alt=""></div>
               <div class="member-info">
                 <h4>Sanja</h4>
-                <span>Backend Developer</span>
-                <div class="social">
-                  <a href=""><i class="bi bi-twitter-x"></i></a>
-                  <a href=""><i class="bi bi-facebook"></i></a>
-                  <a href=""><i class="bi bi-instagram"></i></a>
-                  <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Team Member -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="member">
-              <div class="pic"><img src="static/assets/img/team/team-f.jpg" class="img-fluid" alt=""></div>
-              <div class="member-info">
-                <h4>Sumaya</h4>
                 <span>Backend Developer</span>
                 <div class="social">
                   <a href=""><i class="bi bi-twitter-x"></i></a>
@@ -466,6 +460,21 @@
             </div>
           </div><!-- End Team Member -->
 
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-m.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Juan</h4>
+                <span>Backend Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
         </div>
 
       </div>
