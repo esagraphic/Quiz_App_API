@@ -1,0 +1,631 @@
+{% extends 'landing/base_landing.html' %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="static/assets/img/logo.png" alt=""> -->
+        <h1 class="sitename">QuizMaster</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#hero" class="active">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#features">Features</a></li>
+          
+          <li><a href="#team">Team</a></li>
+          
+        
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section dark-background">
+      <img src="static/assets/img/hero-bg-2.jpg" alt="" class="hero-bg">
+
+      <div class="container">
+        <div class="row gy-4 justify-content-between">
+          <div class="col-lg-4 order-lg-last hero-img" data-aos="zoom-out" data-aos-delay="100">
+            <img src="static/assets/img/hero-img.png" class="img-fluid animated" alt="">
+          </div>
+
+          <div class="col-lg-6  d-flex flex-column justify-content-center" data-aos="fade-in">
+            <h1>Design Quizzes. Build Groups. Grow Together with <span>QuizMaster</span></h1>
+            <p>Empower learning and fun — generate quizzes, invite friends or Students, and challenge each other anytime, anywhere.</p>
+
+            <div class="d-flex">
+                <a href="/register.html" class="btn-get-started">Get Started</a>
+              <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+        <defs>
+          <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+        </defs>
+        <g class="wave1">
+          <use xlink:href="#wave-path" x="50" y="3"></use>
+        </g>
+        <g class="wave2">
+          <use xlink:href="#wave-path" x="50" y="0"></use>
+        </g>
+        <g class="wave3">
+          <use xlink:href="#wave-path" x="50" y="9"></use>
+        </g>
+      </svg>
+
+    </section><!-- /Hero Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row align-items-xl-center gy-5">
+
+          <div class="col-xl-5 content">
+            <h3>About Us</h3>
+            <h2>Empowering Educators and Students with Innovative Quiz Tools</h2>
+            <p>QuizMaster is a platform designed for creating, managing, and sharing quizzes with ease. Whether you're an educator looking to engage students or someone passionate about quizzes, our app allows you to build custom quizzes, form groups, and invite others to participate. You can even upload bulk questions through Excel or let our AI generate quiz questions for you. Join us and make learning interactive and fun!</p>
+            <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+          </div>
+          
+
+          <div class="col-xl-7">
+  <div class="row gy-4 icon-boxes">
+
+    <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+      <div class="icon-box">
+        <i class="bi bi-buildings"></i>
+        <h3>Create Quizzes</h3>
+        <p>Create and customize quizzes easily, with options to add questions and set time limits.</p>
+      </div>
+    </div> <!-- End Icon Box -->
+    
+
+    <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+      <div class="icon-box">
+        <i class="bi bi-clipboard-pulse"></i>
+        <h3>Share with Friends</h3>
+        <p>Share quizzes with friends or classmates for easy collaboration and participation.</p>
+      </div>
+    </div> <!-- End Icon Box -->
+    
+
+    <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
+      <div class="icon-box">
+        <i class="bi bi-command"></i>
+        <h3>Create Groups</h3>
+        <p>Create and manage groups to share quizzes and collaborate with friends or colleagues.</p>
+      </div>
+    </div> <!-- End Icon Box -->
+    
+
+    <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
+      <div class="icon-box">
+        <i class="bi bi-graph-up-arrow"></i>
+        <h3>Bulk Quiz Question Upload via Excel</h3>
+        <p>Upload quiz questions in bulk using Excel for faster quiz creation and management.</p>
+      </div>
+    </div> <!-- End Icon Box -->
+
+  </div>
+</div>
+
+
+        </div>
+      </div>
+
+    </section><!-- /About Section -->
+
+    <!-- Features Section -->
+    <section id="features" class="features section light-background">
+
+      <div class="container">
+        <h2>Technologies We Have Used</h2>
+        <div class="row gy-4">
+
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="features-item">
+              <a href="https://www.vmware.com/" target="_blank">
+                <i class="bi bi-terminal-x" style="color: #306998;"></i>
+              </a>
+              <h3><a href="https://www.vmware.com/" target="_blank">vmware</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="features-item">
+              <a href="https://owasp.org/" target="_blank">
+                <i class="bi bi-shield" style="color: #306998;"></i>
+              </a>
+              <h3><a href="https://owasp.org/" target="_blank">OWASP</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="features-item">
+              <a href="https://www.python.org/" target="_blank">
+                <i class="bi bi-file-earmark-code" style="color: #306998;"></i>
+              </a>
+              <h3><a href="https://www.python.org/" target="_blank">Python</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="features-item">
+              <a href="https://www.djangoproject.com/" target="_blank">
+                <i class="bi bi-box" style="color: #092e20;"></i>
+              </a>
+              <h3><a href="https://www.djangoproject.com/" target="_blank">Django</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="features-item">
+              <a href="https://www.django-rest-framework.org/" target="_blank">
+                <i class="bi bi-layers" style="color: #3a3a3a;"></i>
+              </a>
+              <h3><a href="https://www.django-rest-framework.org/" target="_blank">Django REST Framework</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="features-item">
+              <a href="https://www.postgresql.org/" target="_blank">
+                <i class="bi bi-database" style="color: #336791;"></i>
+              </a>
+              <h3><a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="500">
+            <div class="features-item">
+              <a href="https://openpyxl.readthedocs.io/" target="_blank">
+                <i class="bi bi-file-earmark-spreadsheet" style="color: #1f8e73;"></i>
+              </a>
+              <h3><a href="https://openpyxl.readthedocs.io/" target="_blank">Openpyxl</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="600">
+            <div class="features-item">
+              <a href="https://gemini.google.com/app" target="_blank">
+                <i class="bi bi-brain" style="color: #727cf5;"></i>
+              </a>
+              <h3><a href="https://gemini.google.com" target="_blank">Google Gemini AI</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+          
+          
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="700">
+            <div class="features-item">
+              <a href="https://htmx.org/" target="_blank">
+                <i class="bi bi-arrow-repeat" style="color: #f7b731;"></i>
+              </a>
+              <h3><a href="https://htmx.org/" target="_blank">HTMX</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="800">
+            <div class="features-item">
+              <a href="https://tailwindcss.com/" target="_blank">
+                <i class="bi bi-box-arrow-up-right" style="color: #38bdf8;"></i>
+              </a>
+              <h3><a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="900">
+            <div class="features-item">
+              <a href="https://getbootstrap.com/" target="_blank">
+                <i class="bi bi-braces" style="color: #7952b3;"></i>
+              </a>
+              <h3><a href="https://getbootstrap.com/" target="_blank">Bootstrap</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+          <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="1000">
+            <div class="features-item">
+              <a href="https://www.djangoproject.com/" target="_blank">
+                <i class="bi bi-command" style="color: #02c39a;"></i>
+              </a>
+              <h3><a href="https://www.djangoproject.com/" target="_blank">Django-Allauth</a></h3>
+            </div>
+          </div><!-- End Feature Item -->
+    
+        </div>
+      </div>
+    
+    </section><!-- /Technologies Section -->
+    
+
+
+    <!-- Details Section -->
+    <section id="details" class="details section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Details</h2>
+        <div><span>Check Our</span> <span class="description-title">Details</span></div>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row gy-4 align-items-center features-item">
+          <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/XyRTz2nd-_Q" 
+              title="YouTube video player" frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+          </div>
+          <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
+            <h3>Create and Manage Quizzes Seamlessly</h3>
+            <p class="fst-italic">
+              Our platform allows users to easily create subjects, categories, and quizzes. Begin by creating a subject, then organize it into categories. From there, you can create quizzes within those categories. 
+            </p>
+            <ul>
+              <li><i class="bi bi-check"></i><span> Create subjects and categorize them according to your needs.</span></li>
+              <li><i class="bi bi-check"></i> <span> Build quizzes within specific subjects and categories.</span></li>
+              <li><i class="bi bi-check"></i> <span> Add questions to your quizzes using a user-friendly form.</span></li>
+              <li><i class="bi bi-check"></i> <span> Save and finish your questions, or continue adding more with the "Save and New" option.</span></li>
+            </ul>
+          </div>
+        </div><!-- Features Item -->
+      
+        <div class="row gy-4 align-items-center features-item">
+          <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/qpq-tWZ7JPI" 
+              title="YouTube video player" frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+          </div>
+          <div class="col-md-7 order-2 order-md-1" data-aos="fade-up" data-aos-delay="200">
+            <h3>Streamlined Question Management</h3>
+            <p class="fst-italic">
+              If you’re short on time and need a full overview of your questions in one place, or if you prefer to write offline, we’ve got you covered.
+            </p>
+            <p>
+              Simply download our Excel template, fill it with your questions and answers, and upload it back to the system. Once we analyze the file, review the questions, and click "Save" to store them in the database. It’s fast, simple, and efficient.
+            </p>
+          </div>
+        </div><!-- Features Item -->
+      
+        <div class="row gy-4 align-items-center features-item">
+          <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/kS1PKREkhkI" 
+              title="YouTube video player" frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+          </div>
+          <div class="col-md-7" data-aos="fade-up">
+            <h3>Welcome to the World of AI</h3>
+            <p>
+              Don’t have the time to create multiple quizzes, write descriptions, or answer questions manually? We've made it easier than ever for you. With our AI-powered system, you can generate quizzes in seconds—tailored to any subject, topic, or language you need.
+            </p>
+            <p>
+              Our system allows you to quickly review the generated questions. If needed, you can easily update them to fit your exact requirements. Once you’re satisfied, share the quiz with your friends or colleagues and let them enjoy the experience. 
+            </p>
+            <ul>
+              <li><i class="bi bi-check"></i> <span>Generate quizzes for any subject or topic instantly.</span></li>
+              <li><i class="bi bi-check"></i> <span>Create quizzes in any language of your choice.</span></li>
+              <li><i class="bi bi-check"></i> <span>Review, update, and perfect your questions before sharing.</span></li>
+            </ul>
+          </div>
+        </div><!-- Features Item -->
+      
+        <div class="row gy-4 align-items-center features-item">
+          <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out">
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/ocKIt7LYVZ8" 
+              title="YouTube video player" frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen></iframe>
+          </div>
+          <div class="col-md-7 order-2 order-md-1" data-aos="fade-up">
+            <h3>Create and Manage Groups for Seamless Collaboration</h3>
+            <p class="fst-italic">
+              With our platform, you can easily create groups and invite friends or students to join. Once invited, members have the option to accept or decline the invitation. After successfully adding participants, you can assign quizzes to your groups.
+            </p>
+            <p>
+              Participants can view all the groups they have joined, along with the quizzes they have taken and their results. This method provides organizations and users with full control over quiz tracking. Administrators can monitor whether students have participated in a quiz and review their performance results.
+            </p>
+            <ul>
+              <li><i class="bi bi-check"></i> <span>Create groups and invite friends or students to join.</span></li>
+              <li><i class="bi bi-check"></i> <span>Participants can accept or reject invitations to the group.</span></li>
+              <li><i class="bi bi-check"></i> <span>Assign specific quizzes to a group for easy tracking.</span></li>
+              <li><i class="bi bi-check"></i> <span>Track whether students have participated and view their quiz results.</span></li>
+              <li><i class="bi bi-check"></i> <span>Each participant can only take a quiz once per group to ensure fair results.</span></li>
+              <li><i class="bi bi-check"></i> <span>Users can review their past quiz participation and results.</span></li>
+              <li><i class="bi bi-check"></i> <span>Admins have full control over group activities and quiz tracking, making it easier to monitor progress.</span></li>
+              <li><i class="bi bi-check"></i> <span>Easy to manage group dynamics, ensuring smooth operations for organizations or educational institutions.</span></li>
+            </ul>
+          </div>
+        </div><!-- Features Item -->
+      
+      </div>
+      
+
+    </section><!-- /Details Section -->
+
+    
+
+    
+
+    <!-- Team Section -->
+    <section id="team" class="team section light-background">
+
+      <!-- Section Title -->
+      <div class="container section-title " data-aos="fade-up">
+        <h2>Team</h2>
+        <div><span>Check Our</span> <span class="description-title">Team</span></div>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="row gy-5">
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-f.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Sumaya</h4>
+                <span>CTO / Backend Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-m.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Essa</h4>
+                <span>CEO / Back end Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-m.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Dirk</h4>
+                <span>CSO / Backend Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-f.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Sanja</h4>
+                <span>Backend Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-f.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Zoje</h4>
+                <span>Backend Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="member">
+              <div class="pic"><img src="static/assets/img/team/team-m.jpg" class="img-fluid" alt=""></div>
+              <div class="member-info">
+                <h4>Juan</h4>
+                <span>Backend Developer</span>
+                <div class="social">
+                  <a href=""><i class="bi bi-twitter-x"></i></a>
+                  <a href=""><i class="bi bi-facebook"></i></a>
+                  <a href=""><i class="bi bi-instagram"></i></a>
+                  <a href=""><i class="bi bi-linkedin"></i></a>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Team Member -->
+        </div>
+
+      </div>
+
+    </section><!-- /Team Section -->
+
+    
+
+    <section id="faq" class="faq section ">
+      <div class="container-fluid">
+        <div class="row gy-4">
+          <div class="col-lg-7 d-flex flex-column justify-content-center order-2 order-lg-1">
+            <div class="content px-xl-5" data-aos="fade-up" data-aos-delay="100">
+              <h3><span>Frequently Asked </span><strong>Questions</strong></h3>
+              <p>
+                Get to know more about how our system can simplify your quiz creation and management. Here are some frequently asked questions about the platform.
+              </p>
+            </div>
+    
+            <div class="faq-container px-xl-5" data-aos="fade-up" data-aos-delay="200">
+    
+              <div class="faq-item faq-active">
+                <i class="faq-icon bi bi-question-circle"></i>
+                <h3>How can I create a group and invite friends or students?</h3>
+                <div class="faq-content">
+                  <p>Creating a group is simple! You can easily invite friends or students to join your group. Once invited, participants can accept or reject the invitation. After that, you can assign quizzes to the group and monitor their progress.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+    
+              <div class="faq-item">
+                <i class="faq-icon bi bi-question-circle"></i>
+                <h3>How do I track student participation in quizzes?</h3>
+                <div class="faq-content">
+                  <p>As an administrator, you have full control to track student participation. You can see if students have participated in quizzes, and check their results. This ensures you know who completed the quiz and their performance.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+    
+              <div class="faq-item">
+                <i class="faq-icon bi bi-question-circle"></i>
+                <h3>Can users participate in multiple quizzes?</h3>
+                <div class="faq-content">
+                  <p>Each user can participate in a quiz only once per group. This ensures fair participation and allows you to track accurate results for each participant in your group.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+    
+              <div class="faq-item">
+                <i class="faq-icon bi bi-question-circle"></i>
+                <h3>How can I generate quizzes quickly?</h3>
+                <div class="faq-content">
+                  <p>If you don't have time to create quizzes one by one, you can easily generate quizzes in seconds. Our system allows you to create quizzes for any subject, in any language, with just a few clicks. Once generated, you can review, update, and share the quizzes with your group members.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+    
+              <div class="faq-item">
+                <i class="faq-icon bi bi-question-circle"></i>
+                <h3>Can I add questions offline?</h3>
+                <div class="faq-content">
+                  <p>Yes, you can! If you prefer to work offline, simply download our Excel template, fill it with your questions and answers, and upload it back into the system. Our platform will process your file, allowing you to review and finalize the questions before saving them to the database.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+              <div class="faq-item">
+                <i class="faq-icon bi bi-question-circle"></i>
+                <h3>What should I do if I forget my password?</h3>
+                <div class="faq-content">
+                  <p>If you forget your password, simply click on the "Forgot Password" link on the login page. You will be prompted to enter your email address, and a password reset link will be sent to you. Follow the link to reset your password and regain access to your account.</p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div><!-- End Faq item-->
+              
+            </div>
+          </div>
+    
+          <div class="col-lg-5 order-1 order-lg-2">
+            <img src="static/assets/img/faq.jpg" class="img-fluid" alt="" data-aos="zoom-in" data-aos-delay="100">
+          </div>
+        </div>
+      </div>
+    </section><!-- /Faq Section -->
+    
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section light-background">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Contact</h2>
+        <div><span>Check Our</span> <span class="description-title">Contact</span></div>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-4">
+            <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="200">
+              <i class="bi bi-envelope flex-shrink-0"></i>
+              <div>
+                <h3>Get in Touch</h3>
+            <p>Please send us your suggestions and complaints to help us make our app more friendly and professional.</p>
+              </div>
+            </div><!-- End Info Item -->
+
+           
+
+          </div>
+
+          <div class="col-lg-8">
+            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+              <div class="row gy-4">
+
+                <div class="col-md-6">
+                  <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
+                </div>
+
+                <div class="col-md-6 ">
+                  <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
+                </div>
+
+                <div class="col-md-12">
+                  <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
+                </div>
+
+                <div class="col-md-12">
+                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
+                </div>
+
+                <div class="col-md-12 text-center">
+                  <div class="loading">Loading</div>
+                  <div class="error-message"></div>
+                  <div class="sent-message">Your message has been sent. Thank you!</div>
+
+                  <button type="submit">Send Message</button>
+                </div>
+
+              </div>
+            </form>
+          </div><!-- End Contact Form -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Contact Section -->
+
+  </main>
+
+ 
+
+  {% endblock content %}

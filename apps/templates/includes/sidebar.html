@@ -13,8 +13,8 @@
                 </a>
             </div>
             <ul class="nav">
-                <li class="{% if 'index' in segment %} active {% endif %} ">
-                    <a href="/">
+                <li class="{% if 'subject-list' in segment %} active {% endif %} ">
+                    <a href="{% url 'subject-list' %}">
                         <i class="tim-icons icon-chart-pie-36"></i>
                         <p>Subjects</p>
                     </a>
@@ -57,7 +57,8 @@
                             <p>Joined Groups</p>
                         </a>
                     </li>
-                {% endif %}     {% if user.is_authenticated %}
+                {% endif %}     
+                {% if user.is_authenticated %}
                     <li>
                         <a href="{% url 'logout' %}">
                             <i class="tim-icons icon-button-power"></i>
@@ -85,7 +86,7 @@
                             <p>Login</p>
                         </a>
                     </li>
-                    {% endif %}
+                {% endif %}
                 </ul>
         </div>
     </div>
