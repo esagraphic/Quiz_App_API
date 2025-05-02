@@ -5,7 +5,7 @@
 # QuizMaster 🎓🧠  
 **Design Quizzes. Build Groups. Grow Together.**
 
-![QuizMaster Screenshot](landing/static/assets/Dashboard/dashboard.png)
+![QuizMaster Screenshot](https://i.postimg.cc/d0xd5v8b/Screenshot-2025-05-02-at-12-24-56-PM.png)
 ![QuizMaster Screenshot](landing/static/assets/Dashboard/landing.png)
 
 
