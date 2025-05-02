@@ -1,11 +1,12 @@
-![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/landing.png?raw=true)
 ---
-
-
 # QuizMaster 🎓🧠  
 **Design Quizzes. Build Groups. Grow Together.**
 
 ![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/landing.png?raw=true)
+
+![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/dashboard.png?raw=true)
+
+
 
 
 
