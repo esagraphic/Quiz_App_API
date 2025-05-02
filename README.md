@@ -1,11 +1,11 @@
-
+![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/landing.png?raw=true)
 ---
 
 ````markdown
 # QuizMaster 🎓🧠  
 **Design Quizzes. Build Groups. Grow Together.**
 
-![QuizMaster Screenshot](https://raw.githubusercontent.com/esagraphic/Quiz_App_API/landing-page/landing/static/assets/Dashboard/dashboard.png)
+![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/landing.png?raw=true)
 
 
 
