@@ -1,7 +1,7 @@
 ![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/landing.png?raw=true)
 ---
 
-````markdown
+
 # QuizMaster 🎓🧠  
 **Design Quizzes. Build Groups. Grow Together.**
 
@@ -129,9 +129,4 @@ MIT License – feel free to use and contribute.
 
 Have suggestions or want to contribute? Feel free to open an issue or pull request.
 
-```
 
----
-
-Would you like me to format or optimize the badges, project structure section, or deployment instructions as well?
-```
