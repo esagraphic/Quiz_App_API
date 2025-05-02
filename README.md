@@ -1,16 +1,18 @@
----
 # QuizMaster 🎓🧠  
 **Design Quizzes. Build Groups. Grow Together.**
 
-![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/landing.png?raw=true)
+![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/38bff21a8baae9b61e3882c8670aad3e5bb1ed60/landing.png?raw=true)
 
-![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/769deba262890a81a316f366dfb77b65c41fe79a/dashboard.png?raw=true)
+![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/38bff21a8baae9b61e3882c8670aad3e5bb1ed60/dashboard.png?raw=true)
+---
+
+````markdown
 
 
 
-
-
-QuizMaster is a Django-powered quiz platform designed to make learning interactive and fun. Whether you're an educator, student, or quiz enthusiast, QuizMaster helps you create quizzes, form groups, invite friends or students, and track progress — all from one easy-to-use application.
+QuizMaster is a Django-powered quiz platform designed to make learning interactive and fun.
+Whether you're an educator, student, or quiz enthusiast, QuizMaster helps you create quizzes,
+form groups, invite friends or students, and track progress — all from one easy-to-use application.
 
 ---
 
@@ -54,8 +56,8 @@ QuizMaster is a Django-powered quiz platform designed to make learning interacti
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/quizmaster.git
-   cd quizmaster
+   [git clone https://github.com/yourusername/quizmaster.git](https://github.com/esagraphic/Quiz_App_API.git)
+   cd Quiz_App_API
 ````
 
 2. Create and activate a virtual environment:
@@ -96,29 +98,7 @@ QuizMaster is a Django-powered quiz platform designed to make learning interacti
 
 ---
 
-## ❓ Frequently Asked Questions
 
-### How can I create a group and invite members?
-
-From your dashboard, create a group and use the invite form to send invitations. Members can accept or decline. Once accepted, you can assign them quizzes.
-
-### Can I upload questions using Excel?
-
-Yes! Download the Excel template, fill in your questions, and upload them to import all at once.
-
-### Can users take quizzes more than once?
-
-Each user can attempt a quiz **only once per group** to maintain result fairness.
-
-### How does AI quiz generation work?
-
-Enter a topic, subject, or language, and our AI will generate questions for you instantly. You can review and update them before saving.
-
-### What happens if I forget my password?
-
-Use the password reset option on the login page. An email will be sent with instructions to reset it.
-
----
 
 ## 📎 License
 
@@ -130,4 +110,8 @@ MIT License – feel free to use and contribute.
 
 Have suggestions or want to contribute? Feel free to open an issue or pull request.
 
+```
 
+---
+
+```
