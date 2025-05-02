@@ -15,7 +15,7 @@ __pycache__/
 
 # venv
 env
-#.env
+.env
 venv
 .venv
 
