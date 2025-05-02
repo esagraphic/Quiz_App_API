@@ -9,10 +9,7 @@
 ````markdown
 
 
-
-QuizMaster is a Django-powered quiz platform designed to make learning interactive and fun.
-Whether you're an educator, student, or quiz enthusiast, QuizMaster helps you create quizzes,
-form groups, invite friends or students, and track progress — all from one easy-to-use application.
+QuizMaster is a Django-powered quiz platform designed to make learning interactive and fun. Whether you're an educator, student, or quiz enthusiast, QuizMaster helps you create quizzes, form groups, invite friends or students, and track progress — all from one easy-to-use application.
 
 ---
 
