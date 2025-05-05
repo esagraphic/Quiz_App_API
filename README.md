@@ -4,6 +4,11 @@
 ![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/38bff21a8baae9b61e3882c8670aad3e5bb1ed60/landing.png?raw=true)
 
 ![image_alt](https://github.com/esagraphic/Quiz_App_API/blob/38bff21a8baae9b61e3882c8670aad3e5bb1ed60/dashboard.png?raw=true)
+
+## 📽️ Video Tutorial
+
+To see how our app works, check out our video tutorial playlist on YouTube:  
+👉 [Watch the Tutorial](https://www.youtube.com/playlist?list=PLgrR1nC4o-tmdB3XdUX3oMCeLFtHMRKVk)
 ---
 
 QuizMaster is a Django-powered quiz platform designed to make learning interactive and fun. Whether you're an educator, student, or quiz enthusiast, QuizMaster helps you create quizzes, form groups, invite friends or students, and track progress — all from one easy-to-use application.
